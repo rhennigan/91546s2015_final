@@ -15,9 +15,6 @@ class LineSegment
   intersection: (line) ->
 
   parametric: (t) ->
-    if t < 0 or t > 1
-      CoffeeGL.CoffeeGLError "t = #{t} out of range"
-
     p1 = CoffeeGL.Vec3.multScalar(@p1, 1-t)
     p2 = CoffeeGL.Vec3.multScalar(@p2, t)
     CoffeeGL.Vec3.add(p1, p2)
