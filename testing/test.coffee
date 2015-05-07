@@ -1,8 +1,9 @@
-class LineSegment extends CoffeeGL.Geometry
-  constructor: (sp1, sp2) ->
-    super()
+class LineSegment
+  constructor: (@p1, @p2) ->
+    if @p1._DIM != @p2._DIM != 2
+      CoffeeGLError
 
-
+      
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
