@@ -25,7 +25,7 @@ class LineSegment
     det = a*d - b*c
 
     console.log(det)
-    
+
     if det is 0
       null
     else
@@ -50,6 +50,8 @@ class LineSegment
     p1 = CoffeeGL.Vec3.multScalar(@p1, 1-t)
     p2 = CoffeeGL.Vec3.multScalar(@p2, t)
     CoffeeGL.Vec3.add(p1, p2)
+
+
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
