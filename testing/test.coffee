@@ -1,3 +1,9 @@
+class LineSegment extends CoffeeGL.Geometry
+  constructor: (sp1, sp2) ->
+    super()
+
+
+
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
   v1 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(0, 1, 0), new CoffeeGL.Colour.RGBA.WHITE())
