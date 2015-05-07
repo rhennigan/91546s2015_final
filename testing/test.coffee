@@ -63,7 +63,11 @@ intersection = (line1, line2) ->
     when x2 == x3 and y2 == y3 and z2 == z3, x2 == x4 and y2 == y4 and z2 == z4
       new Vec3(x2, y2, z2)
     else
-
+      ux = ((x3 - x4)*(y1 - y2) - (x1 - x2)*(y3 - y4))
+      uy = ((x3 - x4)*(z1 - z2) - (x1 - x2)*(z3 - z4))
+      uz = ((y3 - y4)*(z1 - z2) - (y1 - y2)*(z3 - z4))
+      n = ux*ux + uy*uy + uz*uz
+      
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
