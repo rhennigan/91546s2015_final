@@ -1,9 +1,8 @@
+###LineSegment###
+# A simple line segment formed from a start point @p1, and end point @p2, and their corresponding
+# colors @c1 and @c2, which default to white if left out.
 class LineSegment
   constructor: (@p1, @p2, @c1, @c2) ->
-    if @p1._DIM != @p2._DIM != 2
-      CoffeeGLError "A LineSegment must have two Vec2 vertices"
-
-    gl = CoffeeGL.Context.gl
 
     if not @c1?
       @c1 = new CoffeeGL.Colour.RGBA.WHITE()
@@ -12,6 +11,7 @@ class LineSegment
 
     @v1 = new CoffeeGL.Vertex(@p1, @c1)
     @v2 = new CoffeeGL.Vertex(@p2, @c2)
+
     @line = new CoffeeGL.VertexSoup([@v1, @v2])
     @line.layout = gl.LINES
 
