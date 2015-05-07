@@ -24,8 +24,11 @@ class LineSegment
     t2n = (l1y1 - l1y2)*l2x1 + l1x1*(l1y2 - l2y1) + l1x2*(-l1y1 + l2y1)
     t2d = (l1y1 - l1y2)*(l2x1 - l2x2) - (l1x1 - l1x2)*(l2y1 - l2y2)
 
-    t1: t1n / t1d
-    t2: t2n / t2d
+    t1 = t1n / t1d
+    t2 = t2n / t2d
+
+    if isNaN(t1) and isNaN(t2)  # collinear
+      
 
   parametric: (t) ->
     p1 = CoffeeGL.Vec3.multScalar(@p1, 1-t)
