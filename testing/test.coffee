@@ -63,7 +63,7 @@ intersection = (line1, line2) ->
     when x2 == x3 and y2 == y3 and z2 == z3, x2 == x4 and y2 == y4 and z2 == z4
       new Vec3(x2, y2, z2)
     else
-
+      
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
