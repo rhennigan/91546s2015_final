@@ -18,12 +18,17 @@ class LineSegment
     [l2x1, l2y1] = [line.p1.x, line.p1.y]
     [l2x2, l2y2] = [line.p2.x, line.p2.y]
 
-    det = (l1x1-l1x2)*(l2y1-l2y2) - (l1y1-l1y2)*(l2x1-l2x2)
+    a = l1x1-l1x2
+    b = l1y1-l1y2
+    c = l2x1-l2x2
+    d = l2y1-l2y2
+    det = a*d - b*c
 
     if det is 0
       null
     else
-      
+      xi = (c*(l1x1*l1y2-l1y1*l1x2)-a*(l2x1*l1y2-l1y1*l2x2))/det
+      yi = ((l2y1-l2y2)*(l1x1*l1y2-l1y1*l1x2)-(l1y1-l1y2)*(l2x1*l2y2-l2y1*l2x2))/det
 
     t1 = t1n / t1d
     t2 = t2n / t2d
