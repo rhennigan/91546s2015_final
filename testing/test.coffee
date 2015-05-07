@@ -51,6 +51,10 @@ class LineSegment
     p2 = CoffeeGL.Vec3.multScalar(@p2, t)
     CoffeeGL.Vec3.add(p1, p2)
 
+normalize = (v) ->
+  n = Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
+  new Vec3(v.x/n, v.y/n, v.z/n)
+
 intersection = (line1, line2) ->
   [x1, y1, z1] = [line1.p1.x, line1.p1.y, line1.p1.z]
   [x2, y2, z2] = [line1.p2.x, line1.p2.y, line1.p2.z]
@@ -67,7 +71,7 @@ intersection = (line1, line2) ->
       uy = ((x3 - x4)*(z1 - z2) - (x1 - x2)*(z3 - z4))
       uz = ((y3 - y4)*(z1 - z2) - (y1 - y2)*(z3 - z4))
       n = ux*ux + uy*uy + uz*uz
-      
+
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
