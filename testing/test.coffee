@@ -13,9 +13,8 @@ class LineSegment
     @v2 = new CoffeeGL.Vertex(@p2, @c2)
 
     @line = new CoffeeGL.VertexSoup([@v1, @v2])
+    gl = CoffeeGL.Context.gl
     @line.layout = gl.LINES
-
-
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
@@ -24,20 +23,31 @@ init = () ->
 
   t = new CoffeeGL.Triangle(v0, v1, v2)
 
+  p1 = new CoffeeGL.Vec2(100, 100)
+  p2 = new CoffeeGL.Vec2(480, 480)
+  c1 = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 0.75)
+  c2 = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 0.75)
+
+  l = new LineSegment(p1, p2, c1, c2)
+
   r = new CoffeeGL.Request('basic_vertex_colour.glsl')
   r.get (data) =>
     shader = new CoffeeGL.Shader(data)
     shader.bind()
 
-  @node = new CoffeeGL.Node t
+  @nodet = new CoffeeGL.Node t
+  @nodel = new CoffeeGL.Node l.line
 
-  @camera = new CoffeeGL.Camera.PerspCamera()
+  @camerat = new CoffeeGL.Camera.PerspCamera()
+  @cameral = new CoffeeGL.Camera.OrthoCamera(new CoffeeGL.Vec3(0,0,0.2), new CoffeeGL.Vec3(0,0,0))
 
-  @node.add @camera
+  @nodet.add @camerat
+  @nodel.add @cameral
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
   GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-  @node.draw()
+  @nodet.draw()
+  @nodel.draw()
 
 cgl = new CoffeeGL.App('webgl-canvas', this, init, draw)
