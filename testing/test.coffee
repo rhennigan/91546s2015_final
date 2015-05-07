@@ -12,14 +12,15 @@ class LineSegment
     gl = CoffeeGL.Context.gl
     @layout = gl.LINES
 
-  intersection: (line1, line2) ->
+  intersection: (line) ->
 
   parametric: (t) ->
-    p1 = Vec2.multScalar(@p1, 1-t)
-    p2 = Vec2.multScalar(@p2, t)
-    console.log(p1)
-    console.log(p2)
-    Vec2.add(p1, p2)
+    if t < 0 or t > 1
+      CoffeeGL.CoffeeGLError "t = #{t} out of range"
+
+    p1 = CoffeeGL.Vec3.multScalar(@p1, 1-t)
+    p2 = CoffeeGL.Vec3.multScalar(@p2, t)
+    CoffeeGL.Vec3.add(p1, p2)
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
@@ -28,14 +29,15 @@ init = () ->
 
   t = new CoffeeGL.Triangle(v0, v1, v2)
 
-  p1 = new CoffeeGL.Vec2(100, 100)
-  p2 = new CoffeeGL.Vec2(480, 480)
+  p1 = new CoffeeGL.Vec3(100, 100, 0)
+  p2 = new CoffeeGL.Vec3(300, 300, 0)
   c1 = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 0.75)
   c2 = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 0.75)
 
   l = new LineSegment(p1, p2, c1, c2)
-
-  console.log(l.p1)
+  console.log(l.parametric(0.25))
+  console.log(l.parametric(0.50))
+  console.log(l.parametric(1.0))
 
   r = new CoffeeGL.Request('basic_vertex_colour.glsl')
   r.get (data) =>
@@ -50,6 +52,8 @@ init = () ->
 
   @nodet.add @camerat
   @nodel.add @cameral
+
+
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
