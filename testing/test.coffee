@@ -12,7 +12,7 @@ class LineSegment
     gl = CoffeeGL.Context.gl
     @layout = gl.LINES
 
-  intersection2D: (line) ->
+  intersection: (line) ->
     [l1x1, l1y1] = [@p1.x, @p1.y]
     [l1x2, l1y2] = [@p2.x, @p2.y]
     [l2x1, l2y1] = [line.p1.x, line.p1.y]
@@ -24,17 +24,27 @@ class LineSegment
     d = l2y1-l2y2
     det = a*d - b*c
 
+    console.log(det)
+    
     if det is 0
       null
     else
       xi = (c*(l1x1*l1y2-l1y1*l1x2)-a*(l2x1*l1y2-l1y1*l2x2))/det
-      yi = ((l2y1-l2y2)*(l1x1*l1y2-l1y1*l1x2)-(l1y1-l1y2)*(l2x1*l2y2-l2y1*l2x2))/det
+      yi = (d*(l1x1*l1y2-l1y1*l1x2)-b*(l2x1*l2y2-l2y1*l2x2))/det
 
-    t1 = t1n / t1d
-    t2 = t2n / t2d
+      int1a = Math.min(l1x1, l1x2)
+      int1b = Math.max(l1x1, l1x2)
 
-    if isNaN(t1) and isNaN(t2)  # collinear
+      int2a = Math.min(l2x1, l2x2)
+      int2b = Math.max(l2x1, l2x2)
 
+      console.log(xi, yi)
+      if xi < int1a or  xi > int1b
+        null
+      else if xi < int2a or xi > int2b
+        null
+      else
+        new CoffeeGL.Vec2(xi, yi)
 
   parametric: (t) ->
     p1 = CoffeeGL.Vec3.multScalar(@p1, 1-t)
