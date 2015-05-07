@@ -39,9 +39,12 @@ init = () ->
 
   t = new CoffeeGL.Triangle(v0, v1, v2)
 
+  red = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
+  blue = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
+
   a = () -> Math.random() * 580
-  l1 = new LineSegment(new CoffeeGL.Vec3(a(), a(), 0), new CoffeeGL.Vec3(a(), a(), 0))
-  l2 = new LineSegment(new CoffeeGL.Vec3(a(), a(), 0), new CoffeeGL.Vec3(a(), a(), 0))
+  l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 0), new CoffeeGL.Vec3(200, 100, 0), red, red)
+  l2 = new LineSegment(new CoffeeGL.Vec3(200, 100, 0), new CoffeeGL.Vec3(400, 100, 0), blue, blue)
 
   console.log(l1.intersection(l2))
 
