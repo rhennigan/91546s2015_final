@@ -1,9 +1,21 @@
 class LineSegment
-  constructor: (@p1, @p2) ->
+  constructor: (@p1, @p2, @c1, @c2) ->
     if @p1._DIM != @p2._DIM != 2
-      CoffeeGLError
+      CoffeeGLError "A LineSegment must have two Vec2 vertices"
 
-      
+    gl = CoffeeGL.Context.gl
+
+    if not @c1?
+      @c1 = new CoffeeGL.Colour.RGBA.WHITE()
+    if not @c2?
+      @c2 = new CoffeeGL.Colour.RGBA.WHITE()
+
+    @v1 = new CoffeeGL.Vertex(@p1, @c1)
+    @v2 = new CoffeeGL.Vertex(@p2, @c2)
+    @line = new CoffeeGL.VertexSoup([@v1, @v2])
+    @line.layout = gl.LINES
+
+
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
