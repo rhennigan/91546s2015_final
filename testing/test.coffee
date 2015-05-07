@@ -13,6 +13,19 @@ class LineSegment
     @layout = gl.LINES
 
   intersection: (line) ->
+    [l1x1, l1y1] = [@p1.x, @p1.y]
+    [l1x2, l1y2] = [@p2.x, @p2.y]
+    [l2x1, l2y1] = [line.p1.x, line.p1.y]
+    [l2x2, l2y2] = [line.p2.x, line.p2.y]
+
+    t1n = l1y1*(-l2x1 + l2x2) - l2x2*l2y1 + l1x1*(l2y1 - l2y2) + l2x1*l2y2
+    t1d = (-l1y1 + l1y2)*(l2x1 - l2x2) + (l1x1 - l1x2)*(l2y1 - l2y2)
+
+    t2n = (l1y1 - l1y2)*l2x1 + l1x1*(l1y2 - l2y1) + l1x2*(-l1y1 + l2y1)
+    t2d = (l1y1 - l1y2)*(l2x1 - l2x2) - (l1x1 - l1x2)*(l2y1 - l2y2)
+
+    t1: t1n / t1d
+    t2: t2n / t2d
 
   parametric: (t) ->
     p1 = CoffeeGL.Vec3.multScalar(@p1, 1-t)
@@ -26,15 +39,11 @@ init = () ->
 
   t = new CoffeeGL.Triangle(v0, v1, v2)
 
-  p1 = new CoffeeGL.Vec3(100, 100, 0)
-  p2 = new CoffeeGL.Vec3(300, 300, 0)
-  c1 = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 0.75)
-  c2 = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 0.75)
+  a = () -> Math.random() * 580
+  l1 = new LineSegment(new CoffeeGL.Vec3(a(), a(), 0), new CoffeeGL.Vec3(a(), a(), 0))
+  l2 = new LineSegment(new CoffeeGL.Vec3(a(), a(), 0), new CoffeeGL.Vec3(a(), a(), 0))
 
-  l = new LineSegment(p1, p2, c1, c2)
-  console.log(l.parametric(0.25))
-  console.log(l.parametric(0.50))
-  console.log(l.parametric(1.0))
+  console.log(l1.intersection(l2))
 
   r = new CoffeeGL.Request('basic_vertex_colour.glsl')
   r.get (data) =>
@@ -42,20 +51,21 @@ init = () ->
     shader.bind()
 
   @nodet = new CoffeeGL.Node t
-  @nodel = new CoffeeGL.Node l
+  @nodel1 = new CoffeeGL.Node l1
+  @nodel2 = new CoffeeGL.Node l2
 
   @camerat = new CoffeeGL.Camera.PerspCamera()
   @cameral = new CoffeeGL.Camera.OrthoCamera(new CoffeeGL.Vec3(0, 0, 0.2), new CoffeeGL.Vec3(0, 0, 0))
 
   @nodet.add @camerat
-  @nodel.add @cameral
-
-
+  @nodel1.add @cameral
+  @nodel2.add @cameral
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
   GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-  @nodet.draw()
-  @nodel.draw()
+  #@nodet.draw()
+  @nodel1.draw()
+  @nodel2.draw()
 
 cgl = new CoffeeGL.App('webgl-canvas', this, init, draw)
