@@ -3,19 +3,23 @@
 # colors @c1 and @c2, which default to white if left out.
 class LineSegment
   constructor: (@p1, @p2, @c1, @c2) ->
+    if not @c1?
+      @c1 = new CoffeeGL.Colour.RGBA.WHITE()
+    if not @c2?
+      @c2 = new CoffeeGL.Colour.RGBA.WHITE()
+
     @v = [new CoffeeGL.Vertex(@p1, @c1), new CoffeeGL.Vertex(@p2, @c2)]
     gl = CoffeeGL.Context.gl
     @layout = gl.LINES
 
-  _addToNode: (node) ->
-    node.geometry = @
-    @
+  intersection: (line1, line2) ->
 
-  flatten: () ->
-    t = []
-    for vertex in @v
-      t.concat vertex.flatten()
-    t
+  parametric: (t) ->
+    p1 = Vec2.multScalar(@p1, 1-t)
+    p2 = Vec2.multScalar(@p2, t)
+    console.log(p1)
+    console.log(p2)
+    Vec2.add(p1, p2)
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
@@ -31,13 +35,15 @@ init = () ->
 
   l = new LineSegment(p1, p2, c1, c2)
 
+  console.log(l.p1)
+
   r = new CoffeeGL.Request('basic_vertex_colour.glsl')
   r.get (data) =>
     shader = new CoffeeGL.Shader(data)
     shader.bind()
 
   @nodet = new CoffeeGL.Node t
-  @nodel = new CoffeeGL.Node l.line
+  @nodel = new CoffeeGL.Node l
 
   @camerat = new CoffeeGL.Camera.PerspCamera()
   @cameral = new CoffeeGL.Camera.OrthoCamera(new CoffeeGL.Vec3(0, 0, 0.2), new CoffeeGL.Vec3(0, 0, 0))
