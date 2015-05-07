@@ -3,18 +3,19 @@
 # colors @c1 and @c2, which default to white if left out.
 class LineSegment
   constructor: (@p1, @p2, @c1, @c2) ->
-
-    if not @c1?
-      @c1 = new CoffeeGL.Colour.RGBA.WHITE()
-    if not @c2?
-      @c2 = new CoffeeGL.Colour.RGBA.WHITE()
-
-    @v1 = new CoffeeGL.Vertex(@p1, @c1)
-    @v2 = new CoffeeGL.Vertex(@p2, @c2)
-
-    @line = new CoffeeGL.VertexSoup([@v1, @v2])
+    @v = [new CoffeeGL.Vertex(@p1, @c1), new CoffeeGL.Vertex(@p2, @c2)]
     gl = CoffeeGL.Context.gl
-    @line.layout = gl.LINES
+    @layout = gl.LINES
+
+  _addToNode: (node) ->
+    node.geometry = @
+    @
+
+  flatten: () ->
+    t = []
+    for vertex in @v
+      t.concat vertex.flatten()
+    t
 
 init = () ->
   v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
@@ -39,7 +40,7 @@ init = () ->
   @nodel = new CoffeeGL.Node l.line
 
   @camerat = new CoffeeGL.Camera.PerspCamera()
-  @cameral = new CoffeeGL.Camera.OrthoCamera(new CoffeeGL.Vec3(0,0,0.2), new CoffeeGL.Vec3(0,0,0))
+  @cameral = new CoffeeGL.Camera.OrthoCamera(new CoffeeGL.Vec3(0, 0, 0.2), new CoffeeGL.Vec3(0, 0, 0))
 
   @nodet.add @camerat
   @nodel.add @cameral
