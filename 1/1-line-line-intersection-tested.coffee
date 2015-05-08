@@ -87,13 +87,9 @@ intersection_point = (line1, line2) ->
   [s1, s2] = intersection_params(line1, line2)
   if 0 <= s1 <= 1 and 0 <= s2 <= 1 then line1.parametric(s1) else null
 
-
 init = () ->
-  v0 = new CoffeeGL.Vertex(new Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
-  v1 = new CoffeeGL.Vertex(new Vec3(0, 1, 0), new CoffeeGL.Colour.RGBA.WHITE())
-  v2 = new CoffeeGL.Vertex(new Vec3(1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
 
-  t = new CoffeeGL.Triangle(v0, v1, v2)
+  @nodes = []
 
   red = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
   blue = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
@@ -103,19 +99,14 @@ init = () ->
   l2 = new LineSegment(new Vec3(a(), a(), 0), new Vec3(a(), a(), 0), blue, blue)
   [s1, s2] = intersection_params(l1, l2)
 
-  console.log(s1, s2)
-  console.log(intersection_point(l1, l2))
-
   r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
   r.get (data) =>
     shader = new CoffeeGL.Shader(data)
     shader.bind()
 
-  @nodet = new CoffeeGL.Node t
   @nodel1 = new CoffeeGL.Node l1
   @nodel2 = new CoffeeGL.Node l2
 
-  @camerat = new CoffeeGL.Camera.PerspCamera()
   @cameral = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
 
   @nodet.add @camerat
@@ -125,7 +116,8 @@ init = () ->
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
   GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-  #@nodet.draw()
+  for node in nodes
+    node.draw()
   @nodel1.draw()
   @nodel2.draw()
 
