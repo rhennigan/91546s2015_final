@@ -35,28 +35,32 @@
     }
 
     Main.prototype.init = function() {
-      var p, polygon, req, testPolygons, x, y;
+      var polygon, req;
       this.noise = new CoffeeGL.Noise.Noise();
       console.log(this.noise);
       polygon = (function(_this) {
         return function(x, y, z, n) {
-          var center, i, j, n1, n2, normal, normals, p1, p2, poly, ref, ref1, ref2, step, t, theta1, theta2;
+          var center, i, j, n1, n2, normal, normals, p1, p2, poly, ref, ref1, ref2, step, t, theta1, theta2, v1, v2, v3;
           step = 2 * Math.PI / n;
           center = new CoffeeGL.Vec3(x, y, z);
           poly = new CoffeeGL.Node();
           normals = [];
           for (i = j = 0, ref = n; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+            console.log(i);
             theta1 = step * i;
             theta2 = step * (i + 1);
             p1 = CoffeeGL.Vec3.add(center, new CoffeeGL.Vec3(Math.cos(theta1), Math.sin(theta1), 0));
             p2 = CoffeeGL.Vec3.add(center, new CoffeeGL.Vec3(Math.cos(theta2), Math.sin(theta2), 0));
-            n1 = _this.noise.simplex3(p1.x, p1.y, p1.z);
-            n2 = _this.noise.simplex3(p2.x, p2.y, p2.z);
+            n1 = _this.noise.simplex3(p1.x, p1.y, p1.z) / 100;
+            n2 = _this.noise.simplex3(p2.x, p2.y, p2.z) / 100;
             ref1 = [p1.x + n1, p1.y + n1, p1.z + n1], p1.x = ref1[0], p1.y = ref1[1], p1.z = ref1[2];
             ref2 = [p2.x + n2, p2.y + n2, p2.z + n2], p2.x = ref2[0], p2.y = ref2[1], p2.z = ref2[2];
+            v1 = new CoffeeGL.Vertex(center, new CoffeeGL.Colour.RGBA.WHITE());
+            v2 = new CoffeeGL.Vertex(p1, new CoffeeGL.Colour.RGBA.WHITE());
+            v3 = new CoffeeGL.Vertex(p2, new CoffeeGL.Colour.RGBA.WHITE());
             normal = normalize3(cross3(CoffeeGL.Vec3.sub(p1, center), CoffeeGL.Vec3.sub(p2, center)));
             normals.push(normal);
-            t = new CoffeeGL.Triangle(center, p1, p2, normal);
+            t = new CoffeeGL.Triangle(v1, v2, v3, normal);
             poly.add(t);
           }
           console.log(poly);
@@ -77,23 +81,7 @@
       this.top.add(this.camera);
       this.light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGB.WHITE());
       this.top.add(this.light);
-      testPolygons = (function() {
-        var j, results;
-        results = [];
-        for (x = j = -2; j <= 2; x = ++j) {
-          results.push((function() {
-            var k, results1;
-            results1 = [];
-            for (y = k = -2; k <= 2; y = ++k) {
-              p = polygon(x, y, 0, 5);
-              this.top.add(p);
-              results1.push(p);
-            }
-            return results1;
-          }).call(this));
-        }
-        return results;
-      }).call(this);
+      this.top.add(polygon(0, 0, 0, 7));
       GL.enable(GL.CULL_FACE);
       GL.cullFace(GL.BACK);
       return GL.enable(GL.DEPTH_TEST);

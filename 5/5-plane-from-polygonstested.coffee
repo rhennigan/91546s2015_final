@@ -21,17 +21,21 @@ class Main
       poly = new CoffeeGL.Node()
       normals = []
       for i in [0...n]
+        console.log(i)
         theta1 = step * i
         theta2 = step * (i + 1)
         p1 = CoffeeGL.Vec3.add(center, new CoffeeGL.Vec3(Math.cos(theta1), Math.sin(theta1), 0))
         p2 = CoffeeGL.Vec3.add(center, new CoffeeGL.Vec3(Math.cos(theta2), Math.sin(theta2), 0))
-        n1 = @noise.simplex3(p1.x, p1.y, p1.z)
-        n2 = @noise.simplex3(p2.x, p2.y, p2.z)
+        n1 = @noise.simplex3(p1.x, p1.y, p1.z) / 100
+        n2 = @noise.simplex3(p2.x, p2.y, p2.z) / 100
         [p1.x, p1.y, p1.z] = [p1.x + n1, p1.y + n1, p1.z + n1]
         [p2.x, p2.y, p2.z] = [p2.x + n2, p2.y + n2, p2.z + n2]
+        v1 = new CoffeeGL.Vertex(center, new CoffeeGL.Colour.RGBA.WHITE())
+        v2 = new CoffeeGL.Vertex(p1, new CoffeeGL.Colour.RGBA.WHITE())
+        v3 = new CoffeeGL.Vertex(p2, new CoffeeGL.Colour.RGBA.WHITE())
         normal = normalize3(cross3(CoffeeGL.Vec3.sub(p1, center), CoffeeGL.Vec3.sub(p2, center)))
         normals.push(normal)
-        t = new CoffeeGL.Triangle(center, p1, p2, normal)
+        t = new CoffeeGL.Triangle(v1,v2,v3,normal)
         poly.add(t)
       console.log(poly)
       poly
@@ -54,12 +58,14 @@ class Main
     @light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGB.WHITE())
     @top.add(@light)
 
-    testPolygons =
-      for x in [-2..2]
-        for y in [-2..2]
-          p = polygon(x, y, 0, 5)
-          @top.add(p)
-          p
+    @top.add(polygon(0, 0, 0, 7))
+
+#    testPolygons =
+#      for x in [-2..2]
+#        for y in [-2..2]
+#          p = polygon(x, y, 0, 5)
+#          @top.add(p)
+#          p
 
     # Cylinder(radius, resolution, segments, height, colour)
 #    th = 0.025
