@@ -12,16 +12,28 @@ class Main
 
   init: () =>
 
+    @top = new CoffeeGL.Node()
+
+    req = new CoffeeGL.Request('5-plane-from-polygonstested.glsl')
+    req.get (data) =>
+      @shader = new CoffeeGL.Shader(data)
+      @shader.bind()
+      @shader.setUniform3v("uAmbientLightingColor", new CoffeeGL.Colour.RGB(0.025, 0.025, 0.025))
+
+    @camera = new CoffeeGL.Camera.MousePerspCamera(new CoffeeGL.Vec3(0, 0, 15))
+    @top.add(@camera)
+
+    @light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(0.0,10.0,25.0), new CoffeeGL.Colour.RGB(1.0,1.0,1.0) )
+    @top.add(@light)
+
     @noise = new CoffeeGL.Noise.Noise()
-    console.log(@noise)
 
     polygon = (x, y, z, n) =>
       step = 2 * Math.PI / n
       center = new CoffeeGL.Vec3(x, y, z)
-      poly = new CoffeeGL.Node()
+      mesh = new CoffeeGL.TriangleMesh()
       normals = []
       for i in [0...n]
-        console.log(i)
         theta1 = step * i
         theta2 = step * (i + 1)
         p1 = CoffeeGL.Vec3.add(center, new CoffeeGL.Vec3(Math.cos(theta1), Math.sin(theta1), 0))
@@ -35,37 +47,23 @@ class Main
         v3 = new CoffeeGL.Vertex(p2, new CoffeeGL.Colour.RGBA.WHITE())
         normal = normalize3(cross3(CoffeeGL.Vec3.sub(p1, center), CoffeeGL.Vec3.sub(p2, center)))
         normals.push(normal)
-        t = new CoffeeGL.Triangle(v1,v2,v3,normal)
-        poly.add(t)
-      console.log(poly)
-      poly
+        t = new CoffeeGL.Triangle(v1,v2,v3)
+        mesh.addTriangle(t)
+      new CoffeeGL.Node(mesh)
 
 
 
-    console.log(@noise.simplex3(1.0, 1.5, 2.0))
+    p1 = polygon(0, 0, 0, 5)
+    p2 = polygon(1, 0, 0, 5)
+    console.log(p1, p2)
 
-    @top = new CoffeeGL.Node()
+    @top.add(p1)
+    @top.add(p2)
 
-    req = new CoffeeGL.Request('5-plane-from-polygonstested.glsl')
-    req.get (data) =>
-      @shader = new CoffeeGL.Shader(data)
-      @shader.bind()
-      @shader.setUniform3v("uAmbientLightingColor", new CoffeeGL.Colour.RGB(0.025, 0.025, 0.025))
-
-    @camera = new CoffeeGL.Camera.MousePerspCamera(new CoffeeGL.Vec3(0, 0, 15))
-    @top.add(@camera)
-
-    @light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGB.WHITE())
-    @top.add(@light)
-
-    @top.add(polygon(0, 0, 0, 7))
-
-#    testPolygons =
-#      for x in [-2..2]
-#        for y in [-2..2]
-#          p = polygon(x, y, 0, 5)
-#          @top.add(p)
-#          p
+    testPolygons =
+      for x in [-2..2]
+        for y in [-2..2]
+          @top.add(polygon(x, y, 0, 5))
 
     # Cylinder(radius, resolution, segments, height, colour)
 #    th = 0.025
@@ -111,9 +109,9 @@ class Main
 #
 #    @top.add(@cube)
 
-    GL.enable GL.CULL_FACE
-    GL.cullFace GL.BACK
-    GL.enable GL.DEPTH_TEST
+#    GL.enable GL.CULL_FACE
+#    GL.cullFace GL.BACK
+#    GL.enable GL.DEPTH_TEST
 
   update: (dt) =>
     @light.pos = @camera.pos

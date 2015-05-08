@@ -35,18 +35,29 @@
     }
 
     Main.prototype.init = function() {
-      var polygon, req;
+      var p1, p2, polygon, req, testPolygons, x, y;
+      this.top = new CoffeeGL.Node();
+      req = new CoffeeGL.Request('5-plane-from-polygonstested.glsl');
+      req.get((function(_this) {
+        return function(data) {
+          _this.shader = new CoffeeGL.Shader(data);
+          _this.shader.bind();
+          return _this.shader.setUniform3v("uAmbientLightingColor", new CoffeeGL.Colour.RGB(0.025, 0.025, 0.025));
+        };
+      })(this));
+      this.camera = new CoffeeGL.Camera.MousePerspCamera(new CoffeeGL.Vec3(0, 0, 15));
+      this.top.add(this.camera);
+      this.light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(0.0, 10.0, 25.0), new CoffeeGL.Colour.RGB(1.0, 1.0, 1.0));
+      this.top.add(this.light);
       this.noise = new CoffeeGL.Noise.Noise();
-      console.log(this.noise);
       polygon = (function(_this) {
         return function(x, y, z, n) {
-          var center, i, j, n1, n2, normal, normals, p1, p2, poly, ref, ref1, ref2, step, t, theta1, theta2, v1, v2, v3;
+          var center, i, j, mesh, n1, n2, normal, normals, p1, p2, ref, ref1, ref2, step, t, theta1, theta2, v1, v2, v3;
           step = 2 * Math.PI / n;
           center = new CoffeeGL.Vec3(x, y, z);
-          poly = new CoffeeGL.Node();
+          mesh = new CoffeeGL.TriangleMesh();
           normals = [];
           for (i = j = 0, ref = n; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-            console.log(i);
             theta1 = step * i;
             theta2 = step * (i + 1);
             p1 = CoffeeGL.Vec3.add(center, new CoffeeGL.Vec3(Math.cos(theta1), Math.sin(theta1), 0));
@@ -60,31 +71,32 @@
             v3 = new CoffeeGL.Vertex(p2, new CoffeeGL.Colour.RGBA.WHITE());
             normal = normalize3(cross3(CoffeeGL.Vec3.sub(p1, center), CoffeeGL.Vec3.sub(p2, center)));
             normals.push(normal);
-            t = new CoffeeGL.Triangle(v1, v2, v3, normal);
-            poly.add(t);
+            t = new CoffeeGL.Triangle(v1, v2, v3);
+            mesh.addTriangle(t);
           }
-          console.log(poly);
-          return poly;
+          return new CoffeeGL.Node(mesh);
         };
       })(this);
-      console.log(this.noise.simplex3(1.0, 1.5, 2.0));
-      this.top = new CoffeeGL.Node();
-      req = new CoffeeGL.Request('5-plane-from-polygonstested.glsl');
-      req.get((function(_this) {
-        return function(data) {
-          _this.shader = new CoffeeGL.Shader(data);
-          _this.shader.bind();
-          return _this.shader.setUniform3v("uAmbientLightingColor", new CoffeeGL.Colour.RGB(0.025, 0.025, 0.025));
-        };
-      })(this));
-      this.camera = new CoffeeGL.Camera.MousePerspCamera(new CoffeeGL.Vec3(0, 0, 15));
-      this.top.add(this.camera);
-      this.light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGB.WHITE());
-      this.top.add(this.light);
-      this.top.add(polygon(0, 0, 0, 7));
-      GL.enable(GL.CULL_FACE);
-      GL.cullFace(GL.BACK);
-      return GL.enable(GL.DEPTH_TEST);
+      p1 = polygon(0, 0, 0, 5);
+      p2 = polygon(1, 0, 0, 5);
+      console.log(p1, p2);
+      this.top.add(p1);
+      this.top.add(p2);
+      return testPolygons = (function() {
+        var j, results;
+        results = [];
+        for (x = j = -2; j <= 2; x = ++j) {
+          results.push((function() {
+            var k, results1;
+            results1 = [];
+            for (y = k = -2; k <= 2; y = ++k) {
+              results1.push(this.top.add(polygon(x, y, 0, 5)));
+            }
+            return results1;
+          }).call(this));
+        }
+        return results;
+      }).call(this);
     };
 
     Main.prototype.update = function(dt) {
