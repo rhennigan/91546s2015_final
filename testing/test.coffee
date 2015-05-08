@@ -97,35 +97,32 @@ coplanar = (line1, line2) ->
   v2 = new Vec4(line2.p2.x, line2.p2.y, line2.p2.z, 1)
   (-EPS < det4(u1, v1, u2, v2) < EPS)
 
-intersection = (line1, line2) ->
+intersection_param = (line1, line2) ->
   if not coplanar(line1, line2)
     null
   else
     [x1, x2] = [line1.p1, line1.p2]
     [x3, x4] = [line2.p1, line2.p2]
 
-    a = sub3(x2, x1)
-    b = sub3(x4, x3)
-    c = sub3(x3, x1)
+    a1 = sub3(x2, x1)
+    b1 = sub3(x4, x3)
+    c1 = sub3(x3, x1)
 
-    n = norm3(cross3(a, b))
-    dot3(cross3(c, b), cross3(a, b)) / (n*n)
+    n1 = norm3(cross3(a1, b1))
+    s1 = dot3(cross3(c1, b1), cross3(a1, b1)) / (n1*n1)
 
-#    an = vNormalize(a)
-#    bn = vNormalize(b)
-#    vn = vNormalize(v = cross3(an, bn))
-#    n = vNorm(v)
-#    n2 = n*n
-#
-#    s1 = det3(c, bn, vn)
-#    s2 = det3(c, an, vn)
+    a2 = b1
+    b2 = a1
+    c2 = smul3(c1, -1)
 
-#    i1 = vAdd(line1.p1, vsMul(an, s1))
-#    i2 = vAdd(line2.p1, vsMul(bn, s2))
-#
-#    vsMul(vAdd(i1, i2), 0.5)
+    n2 = n1
+    s2 = dot3(cross3(c2, b2), cross3(a2, b2)) / (n2*n2)
 
-#    [s1, s2]
+    [s1, s2]
+
+intersection_point = (line1, line2) ->
+  t = intersection_param(line1, line2)
+  if 0 <= t <= 1 then line1.parametric(t) else null
 
 
 init = () ->
@@ -140,11 +137,11 @@ init = () ->
 
   a = () -> Math.random() * 580
   l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 0), new CoffeeGL.Vec3(400, 400, 0), red, red)
-  l2 = new LineSegment(new CoffeeGL.Vec3(100, 400, 0), new CoffeeGL.Vec3(300, 200, 0), blue, blue)
-  s1 = intersection(l1, l2)
+  l2 = new LineSegment(new CoffeeGL.Vec3(100, 400, 0), new CoffeeGL.Vec3(300, 400, 0), blue, blue)
+  [s1, s2] = intersection_param(l1, l2)
 
-  console.log(s1)
-  console.log(l1.parametric(s1))
+  console.log(s1, s2)
+  console.log(intersection_point(l1, l2))
 
   r = new CoffeeGL.Request('basic_vertex_colour.glsl')
   r.get (data) =>
