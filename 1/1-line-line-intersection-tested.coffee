@@ -98,7 +98,7 @@ init = () ->
   @p1x = 100
   @p1y = 100
 
-  @p1 = new Vec3(@p1x, @p1y, 0)
+  @p1 = new Vec3(100, 100, 0)
   @p2 = new Vec3(400, 400, 0)
   @p3 = new Vec3(100, 400, 0)
   @p4 = new Vec3(400, 100, 0)
@@ -112,13 +112,17 @@ init = () ->
   @node1 = new CoffeeGL.Node @line1
   @node2 = new CoffeeGL.Node @line2
 
-  @top_node.add(@node1, @node2)
+  @top_node.add(@node1)
+  @top_node.add(@node2)
 
   @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
   @top_node.add(@camera)
 
   add_line = (x1, y1, x2, y2) ->
-    console.log(@top_node.children[0].geometry)
+    # @top_node.children[0].geometry.v[0].p.x = x1
+    if @top_node.children[0]?
+      @top_node.remove(@top_node.children[0])
+    # console.log(@top_node.children[0].geometry.v[0].p)
 
   gui = new dat.GUI()
   gui.remember(@)
