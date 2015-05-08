@@ -1,5 +1,5 @@
-add3 = (u, v) -> new Vec3(u.x + v.x, u.y + v.y, u.z + v.z)
-sub3 = (u, v) -> new Vec3(u.x - v.x, u.y - v.y, u.z - v.z)
+add3 = (u, v) -> new CoffeeGL.Vec3(u.x + v.x, u.y + v.y, u.z + v.z)
+sub3 = (u, v) -> new CoffeeGL.Vec3(u.x - v.x, u.y - v.y, u.z - v.z)
 sc_mul3 = (v, s) -> new CoffeeGL.Vec3(v.x*s, v.y*s, v.z*s)
 norm3 = (v) -> Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
 normalize3 = (v) -> sc_mul3(v, 1 / norm3(v))
@@ -23,16 +23,40 @@ normal = (vertices) ->
       normalize3(cross3(v1, v2))
 
   normalVector = new CoffeeGL.Vec3(0, 0, 0)
+  for i in [0..n]
+    normalVector.x += normals[i].x
+    normalVector.y += normals[i].y
+    normalVector.z += normals[i].z
+  normalVector.x = normalVector.x / n
+  normalVector.y = normalVector.y / n
+  normalVector.z = normalVector.z / n
+
+  error = 0
   for i in [0...n]
-    center.x += vertices[i].x
-    center.y += vertices[i].y
-    center.z += vertices[i].z
-  center.x = center.x / n
-  center.y = center.y / n
-  center.z = center.z / n
+    error += norm3(sub3(normalVector, normals[i]))
 
+  {A: normalVector.x, B: normalVector.y, C: normalVector.z, D: error < 0.1}
 
+noise = new CoffeeGL.Noise.Noise()
 
+n = 7
+step = 2 * Math.PI / n
+exact = []
+approx = []
+for i in [0..5]
+  theta1 = step * i
+  theta2 = step * (i + 1)
+  p1 = new CoffeeGL.Vec3(Math.cos(theta1), Math.sin(theta1), 0)
+  p2 = new CoffeeGL.Vec3(Math.cos(theta1), Math.sin(theta1), 0)
+  p2.z = noise.simplex2(p2.x, p2.y) / 100.0
+  exact.push(p1)
+  approx.push(p2)
+
+console.log(exact)
+console.log(approx)
+
+console.log(normal(exact))
+console.log(normal(approx))
 
 
 #RED = new CoffeeGL.Colour.RGB(0.839216,0.290196,0.152941)
@@ -146,19 +170,19 @@ normal = (vertices) ->
 #    @cs[11].matrix.translate(new CoffeeGL.Vec3(-1,  0,  1))
 #
 #    @top.add(@cube)
-
-  GL.enable GL.CULL_FACE
-  GL.cullFace GL.BACK
-  GL.enable GL.DEPTH_TEST
-
-  update: (dt) =>
-    #@light.pos = @camera.pos
-
-  draw: () =>
-    GL.clearColor(0.15, 0.15, 0.15, 1.0)
-    GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-
-    @top.draw() if @top?
-
-main = new Main()
-cgl = new CoffeeGL.App('webgl-canvas', main, main.init, main.draw, main.update)
+#
+#  GL.enable GL.CULL_FACE
+#  GL.cullFace GL.BACK
+#  GL.enable GL.DEPTH_TEST
+#
+#  update: (dt) =>
+#    #@light.pos = @camera.pos
+#
+#  draw: () =>
+#    GL.clearColor(0.15, 0.15, 0.15, 1.0)
+#    GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
+#
+#    @top.draw() if @top?
+#
+#main = new Main()
+#cgl = new CoffeeGL.App('webgl-canvas', main, main.init, main.draw, main.update)
