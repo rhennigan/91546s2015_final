@@ -41,15 +41,15 @@
     normals = (function() {
       var k, ref1, results;
       results = [];
-      for (i = k = 0, ref1 = n; 0 <= ref1 ? k <= ref1 : k >= ref1; i = 0 <= ref1 ? ++k : --k) {
+      for (i = k = 0, ref1 = n - 1; 0 <= ref1 ? k <= ref1 : k >= ref1; i = 0 <= ref1 ? ++k : --k) {
         v1 = sub3(vertices[i], center);
-        v2 = sub3(vertices[(i + 1) % n], center);
+        v2 = sub3(vertices[i + 1], center);
         results.push(normalize3(cross3(v1, v2)));
       }
       return results;
     })();
     normalVector = new CoffeeGL.Vec3(0, 0, 0);
-    for (i = k = 0, ref1 = n; 0 <= ref1 ? k <= ref1 : k >= ref1; i = 0 <= ref1 ? ++k : --k) {
+    for (i = k = 0, ref1 = n - 1; 0 <= ref1 ? k < ref1 : k > ref1; i = 0 <= ref1 ? ++k : --k) {
       normalVector.x += normals[i].x;
       normalVector.y += normals[i].y;
       normalVector.z += normals[i].z;
@@ -99,4 +99,4 @@
 
 }).call(this);
 
-//# sourceMappingURL=5-plane-from-polygonstested.js.map
+//# sourceMappingURL=5-plane-from-polygons.js.map

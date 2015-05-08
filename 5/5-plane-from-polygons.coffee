@@ -17,13 +17,13 @@ normal = (vertices) ->
   center.z = center.z / n
 
   normals =
-    for i in [0..n]
+    for i in [0..(n-1)]
       v1 = sub3(vertices[i], center)
-      v2 = sub3(vertices[(i+1)%n], center)
+      v2 = sub3(vertices[i+1], center)
       normalize3(cross3(v1, v2))
 
   normalVector = new CoffeeGL.Vec3(0, 0, 0)
-  for i in [0..n]
+  for i in [0...(n-1)]
     normalVector.x += normals[i].x
     normalVector.y += normals[i].y
     normalVector.z += normals[i].z
