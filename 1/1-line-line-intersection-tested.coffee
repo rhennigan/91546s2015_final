@@ -120,8 +120,10 @@ init = () ->
 
   add_line = (x1, y1, x2, y2) ->
     # @top_node.children[0].geometry.v[0].p.x = x1
-    if @top_node.children[0]?
-      @top_node.remove(@top_node.children[0])
+    @top_node.children[0].geometry.v[0].p.x = x1
+    @top_node.children[0].rebrew()
+    console.log(@top_node.children[0])
+    # @top_node.add(new CoffeeGL.Node(new LineSegment(x1, y1, x2, y2)))
     # console.log(@top_node.children[0].geometry.v[0].p)
 
   gui = new dat.GUI()
