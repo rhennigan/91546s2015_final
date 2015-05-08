@@ -58,13 +58,21 @@ class LineSegment
     CoffeeGL.Vec3.add(p1, p2)
 
 vAdd = (u, v) -> new Vec3(u.x + v.x, u.y + v.y, u.z + v.z)
+
 vSub = (u, v) -> new Vec3(u.x - v.x, u.y - v.y, u.z - v.z)
+
 vsMul = (v, s) -> new Vec3(v.x*s, v.y*s, v.z*s)
+
 vMul = (u, v) -> new Vec3(u.x*v.x, u.y*v.y, u.z*v.z)
+
 vDot = (u, v) -> u.x*v.x + u.y*v.y + u.z*v.z
+
 vNorm = (v) -> Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
+
 vNormalize = (v) -> vsMul(v, 1 / vNorm(v))
+
 det3 = (u, v, w) -> -(u.z*v.y*w.x) + u.y*v.z*w.x + u.z*v.x*w.y - u.x*v.z*w.y - u.y*v.x*w.z + u.x*v.y*w.z
+
 det4 = (u, v, w, x) ->
   -u.z*v.y*w.x*x.w + u.y*v.z*w.x*x.w + u.z*v.x*w.y*x.w - u.x*v.z*w.y*x.w -
     u.y*v.x*w.z*x.w + u.x*v.y*w.z*x.w + u.z*v.y*w.w*x.x - u.y*v.z*w.w*x.x -
@@ -74,6 +82,7 @@ det4 = (u, v, w, x) ->
     u.y*v.w*w.x*x.z + u.w*v.y*w.x*x.z + u.x*v.w*w.y*x.z - u.w*v.x*w.y*x.z
 
 cross3 = (u, v) -> new Vec3(-(u.z*v.y) + u.y*v.z, u.z*v.x - u.x*v.z, -(u.y*v.x) + u.x*v.y)
+
 cross4 = (u, v, w) ->
   x1 = -(u.z*v.y*w.w) + u.y*v.z*w.w + u.z*v.w*w.y - u.w*v.z*w.y - u.y*v.w*w.z + u.w*v.y*w.z
   x2 = u.z*v.x*w.w - u.x*v.z*w.w - u.z*v.w*w.x + u.w*v.z*w.x + u.x*v.w*w.z - u.w*v.x*w.z
@@ -102,13 +111,15 @@ intersection = (line1, line2) ->
     n = vNorm(v)
     n2 = n*n
 
-    s1 = det3(c, bn, vn) / n2
-    s2 = det3(c, an, vn) / n2
+    s1 = det3(c, bn, vn)
+    s2 = det3(c, an, vn)
 
-    i1 = vAdd(line1.p1, vsMul(an, s1))
-    i2 = vAdd(line2.p1, vsMul(bn, s2))
+#    i1 = vAdd(line1.p1, vsMul(an, s1))
+#    i2 = vAdd(line2.p1, vsMul(bn, s2))
+#
+#    vsMul(vAdd(i1, i2), 0.5)
 
-    vsMul(vAdd(i1, i2), 0.5)
+    [s1, s2]
 
 
 init = () ->
@@ -122,8 +133,8 @@ init = () ->
   blue = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
 
   a = () -> Math.random() * 580
-  l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 200), new CoffeeGL.Vec3(300, 300, 200), red, red)
-  l2 = new LineSegment(new CoffeeGL.Vec3(300, 100, -100), new CoffeeGL.Vec3(200, 100, 100), blue, blue)
+  l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 0), new CoffeeGL.Vec3(300, 300, 0), red, red)
+  l2 = new LineSegment(new CoffeeGL.Vec3(100, 300, 0), new CoffeeGL.Vec3(300, 100, 0), blue, blue)
 
   console.log(intersection(l1, l2))
 
