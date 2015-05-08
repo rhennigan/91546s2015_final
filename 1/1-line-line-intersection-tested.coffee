@@ -118,11 +118,14 @@ init = () ->
   @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
   @top_node.add(@camera)
 
-  add_line = (x1, y1, x2, y2) ->
+  add_line = () ->
     # @top_node.children[0].geometry.v[0].p.x = x1
-    @top_node.children[0].geometry.v[0].p.x = x1
-    @top_node.children[0].rebrew()
-    console.log(@top_node.children[0])
+    @node1.remove(@line1)
+    @p1.x = @p1x
+    @line1 = new LineSegment(@p1, @p2, @c1, @c1)
+    @node1.add(new CoffeeGL.Node @line1)
+    console.log(@node1)
+    #console.log(@top_node.children[0])
     # @top_node.add(new CoffeeGL.Node(new LineSegment(x1, y1, x2, y2)))
     # console.log(@top_node.children[0].geometry.v[0].p)
 
@@ -130,7 +133,7 @@ init = () ->
   gui.remember(@)
   x1 = gui.add(@, 'p1x')
   x1.onChange((value) =>
-    add_line(@p1x, 1, 1, 500)
+    add_line()
   )
 
 draw = () ->
