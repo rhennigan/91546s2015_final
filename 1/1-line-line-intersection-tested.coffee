@@ -87,9 +87,28 @@ intersection_point = (line1, line2) ->
   [s1, s2] = intersection_params(line1, line2)
   if 0 <= s1 <= 1 and 0 <= s2 <= 1 then line1.parametric(s1) else null
 
-init = () ->
 
-  @nodes = []
+
+init = () ->
+  canvas = document.getElementById('webgl-canvas')
+  drag_start = new Vec2(0, 0)
+  drag_current = new Vec2(0, 0)
+  dragging = false
+  placed_one = false
+  placed = new Vec2(0, 0)
+
+  get_mouse_pos = (event, dest) =>
+    rect = canvas.getBoundingClientRect()
+    dest.x = event.clientX - rect.left
+    dest.y = event.clientY - rect.top
+    [dest.x, dest.y]
+
+  canvas.addEventListener 'mousedown', (event) =>
+     get_mouse_pos(event, @drag_start)
+     @dragging = true
+
+
+  nodes = []
 
   red = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
   blue = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
