@@ -1,3 +1,9 @@
+EPS = 0.00001
+
+Vec2 = CoffeeGL.Vec2
+Vec3 = CoffeeGL.Vec3
+Vec4 = CoffeeGL.Vec4
+
 ###LineSegment###
 # A simple line segment formed from a start point @p1, and end point @p2, and their corresponding
 # colors @c1 and @c2, which default to white if left out.
@@ -75,13 +81,12 @@ cross4 = (u, v, w) ->
   x4 = u.z*v.y*w.x - u.y*v.z*w.x - u.z*v.x*w.y + u.x*v.z*w.y + u.y*v.x*w.z - u.x*v.y*w.z
   new Vec4(x1, x2, x3, x4)
 
-
 coplanar = (line1, line2) ->
   u1 = new Vec4(line1.p1.x, line1.p1.y, line1.p1.z, 1)
   v1 = new Vec4(line1.p2.x, line1.p2.y, line1.p2.z, 1)
   u2 = new Vec4(line2.p1.x, line2.p1.y, line2.p1.z, 1)
   v2 = new Vec4(line2.p2.x, line2.p2.y, line2.p2.z, 1)
-  det4(u1, v1, u2, v2) == 0
+  (-EPS < det4(u1, v1, u2, v2) < EPS)
 
 intersection = (line1, line2) ->
   if not coplanar(line1, line2)
@@ -93,15 +98,17 @@ intersection = (line1, line2) ->
 
     an = vNormalize(a)
     bn = vNormalize(b)
-    vn = vNormalize(cross3(an, bn))
+    vn = vNormalize(v = cross3(an, bn))
     n = vNorm(v)
     n2 = n*n
 
     s1 = det3(c, bn, vn) / n2
     s2 = det3(c, an, vn) / n2
 
-    
+    i1 = vAdd(line1.p1, vsMul(an, s1))
+    i2 = vAdd(line2.p1, vsMul(bn, s2))
 
+    vsMul(vAdd(i1, i2), 0.5)
 
 
 init = () ->
@@ -115,10 +122,10 @@ init = () ->
   blue = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
 
   a = () -> Math.random() * 580
-  l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 0), new CoffeeGL.Vec3(200, 100, 0), red, red)
-  l2 = new LineSegment(new CoffeeGL.Vec3(200, 100, 0), new CoffeeGL.Vec3(400, 100, 0), blue, blue)
+  l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 200), new CoffeeGL.Vec3(300, 300, 200), red, red)
+  l2 = new LineSegment(new CoffeeGL.Vec3(300, 100, -100), new CoffeeGL.Vec3(200, 100, 100), blue, blue)
 
-  console.log(l1.intersection(l2))
+  console.log(intersection(l1, l2))
 
   r = new CoffeeGL.Request('basic_vertex_colour.glsl')
   r.get (data) =>
