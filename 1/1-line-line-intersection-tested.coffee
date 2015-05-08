@@ -90,22 +90,23 @@ intersection_point = (line1, line2) ->
 
 
 init = () ->
-  canvas = document.getElementById('webgl-canvas')
   drag_start = new Vec2(0, 0)
   drag_current = new Vec2(0, 0)
   dragging = false
   placed_one = false
   placed = new Vec2(0, 0)
 
-  get_mouse_pos = (event, dest) =>
-    rect = canvas.getBoundingClientRect()
-    dest.x = event.clientX - rect.left
-    dest.y = event.clientY - rect.top
-    [dest.x, dest.y]
 
-  canvas.addEventListener 'mousedown', (event) =>
-     get_mouse_pos(event, @drag_start)
-     @dragging = true
+  CoffeeGL.Context.mouseDown.add (event) =>
+    console.log(placed)
+    drag_start.x = event.mouseX
+    drag_start.y = event.mouseY
+
+    dragging = true
+    if not placed_one
+      placed.x = drag_start.x
+      placed.y = drag_start.y
+
 
 
   nodes = []
@@ -128,15 +129,14 @@ init = () ->
 
   @cameral = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
 
-  @nodet.add @camerat
   @nodel1.add @cameral
   @nodel2.add @cameral
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
   GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-  for node in nodes
-    node.draw()
+#  for node in nodes
+#    node.draw()
   @nodel1.draw()
   @nodel2.draw()
 
