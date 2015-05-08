@@ -53,15 +53,15 @@ class LineSegment
         new CoffeeGL.Vec2(xi, yi)
 
   parametric: (t) ->
-    p1 = CoffeeGL.Vec3.multScalar(@p1, 1-t)
-    p2 = CoffeeGL.Vec3.multScalar(@p2, t)
-    CoffeeGL.Vec3.add(p1, p2)
+    p1 = sc_mul3(@p1, 1-t)
+    p2 = sc_mul3(@p2, t)
+    add3(p1, p2)
 
 add3 = (u, v) -> new Vec3(u.x + v.x, u.y + v.y, u.z + v.z)
 
 sub3 = (u, v) -> new Vec3(u.x - v.x, u.y - v.y, u.z - v.z)
 
-smul3 = (v, s) -> new Vec3(v.x*s, v.y*s, v.z*s)
+sc_mul3 = (v, s) -> new Vec3(v.x*s, v.y*s, v.z*s)
 
 mul3 = (u, v) -> new Vec3(u.x*v.x, u.y*v.y, u.z*v.z)
 
@@ -69,7 +69,7 @@ dot3 = (u, v) -> u.x*v.x + u.y*v.y + u.z*v.z
 
 norm3 = (v) -> Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
 
-normalize3 = (v) -> smul3(v, 1 / norm3(v))
+normalize3 = (v) -> sc_mul3(v, 1 / norm3(v))
 
 det3 = (u, v, w) -> -(u.z*v.y*w.x) + u.y*v.z*w.x + u.z*v.x*w.y - u.x*v.z*w.y - u.y*v.x*w.z + u.x*v.y*w.z
 
@@ -97,7 +97,7 @@ coplanar = (line1, line2) ->
   v2 = new Vec4(line2.p2.x, line2.p2.y, line2.p2.z, 1)
   (-EPS < det4(u1, v1, u2, v2) < EPS)
 
-intersection_param = (line1, line2) ->
+intersection_params = (line1, line2) ->
   if not coplanar(line1, line2)
     null
   else
@@ -113,7 +113,7 @@ intersection_param = (line1, line2) ->
 
     a2 = b1
     b2 = a1
-    c2 = smul3(c1, -1)
+    c2 = sc_mul3(c1, -1)
 
     n2 = n1
     s2 = dot3(cross3(c2, b2), cross3(a2, b2)) / (n2*n2)
@@ -121,14 +121,14 @@ intersection_param = (line1, line2) ->
     [s1, s2]
 
 intersection_point = (line1, line2) ->
-  t = intersection_param(line1, line2)
-  if 0 <= t <= 1 then line1.parametric(t) else null
+  [s1, s2] = intersection_params(line1, line2)
+  if 0 <= s1 <= 1 and 0 <= s2 <= 1 then line1.parametric(s1) else null
 
 
 init = () ->
-  v0 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
-  v1 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(0, 1, 0), new CoffeeGL.Colour.RGBA.WHITE())
-  v2 = new CoffeeGL.Vertex(new CoffeeGL.Vec3(1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
+  v0 = new CoffeeGL.Vertex(new Vec3(-1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
+  v1 = new CoffeeGL.Vertex(new Vec3(0, 1, 0), new CoffeeGL.Colour.RGBA.WHITE())
+  v2 = new CoffeeGL.Vertex(new Vec3(1, -1, 0), new CoffeeGL.Colour.RGBA.WHITE())
 
   t = new CoffeeGL.Triangle(v0, v1, v2)
 
@@ -136,9 +136,9 @@ init = () ->
   blue = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
 
   a = () -> Math.random() * 580
-  l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 0), new CoffeeGL.Vec3(400, 400, 0), red, red)
-  l2 = new LineSegment(new CoffeeGL.Vec3(100, 400, 0), new CoffeeGL.Vec3(300, 400, 0), blue, blue)
-  [s1, s2] = intersection_param(l1, l2)
+  l1 = new LineSegment(new Vec3(a(), a(), 0), new Vec3(a(), a(), 0), red, red)
+  l2 = new LineSegment(new Vec3(a(), a(), 0), new Vec3(a(), a(), 0), blue, blue)
+  [s1, s2] = intersection_params(l1, l2)
 
   console.log(s1, s2)
   console.log(intersection_point(l1, l2))
@@ -153,7 +153,7 @@ init = () ->
   @nodel2 = new CoffeeGL.Node l2
 
   @camerat = new CoffeeGL.Camera.PerspCamera()
-  @cameral = new CoffeeGL.Camera.OrthoCamera(new CoffeeGL.Vec3(0, 0, 0.2), new CoffeeGL.Vec3(0, 0, 0))
+  @cameral = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
 
   @nodet.add @camerat
   @nodel1.add @cameral
