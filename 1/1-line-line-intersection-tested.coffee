@@ -95,46 +95,33 @@ init = () ->
     shader = new CoffeeGL.Shader(data)
     shader.bind()
 
-  @p1x = 100
-  @p1y = 100
+  random_line = () ->
+    p1 = new Vec3(Math.random()*500, Math.random()*500, 0)
+    p2 = new Vec3(Math.random()*500, Math.random()*500, 0)
+    c1 = new CoffeeGL.Colour.RGBA(Math.random(), Math.random(), Math.random(), 1.0)
+    c2 = new CoffeeGL.Colour.RGBA(Math.random(), Math.random(), Math.random(), 1.0)
+    line = new LineSegment(p1, p2, c1, c2)
+    line
+#
+#  @p1 = new Vec3(100, 100, 0)
+#  @p2 = new Vec3(400, 400, 0)
+#  @p3 = new Vec3(100, 400, 0)
+#  @p4 = new Vec3(400, 100, 0)
+#
+#  @c1 = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
+#  @c2 = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
+#
+#  @line1 = new LineSegment(@p1, @p2, @c1, @c1)
+#  @line2 = new LineSegment(@p3, @p4, @c2, @c2)
 
-  @p1 = new Vec3(100, 100, 0)
-  @p2 = new Vec3(400, 400, 0)
-  @p3 = new Vec3(100, 400, 0)
-  @p4 = new Vec3(400, 100, 0)
-
-  @c1 = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
-  @c2 = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
-
-  @line1 = new LineSegment(@p1, @p2, @c1, @c1)
-  @line2 = new LineSegment(@p3, @p4, @c2, @c2)
-
-  @node1 = new CoffeeGL.Node @line1
-  @node2 = new CoffeeGL.Node @line2
+  @node1 = new CoffeeGL.Node(random_line())
+  @node2 = new CoffeeGL.Node(random_line())
 
   @top_node.add(@node1)
   @top_node.add(@node2)
 
   @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
   @top_node.add(@camera)
-
-  add_line = () ->
-    # @top_node.children[0].geometry.v[0].p.x = x1
-    @node1.remove(@line1)
-    @p1.x = @p1x
-    @line1 = new LineSegment(@p1, @p2, @c1, @c1)
-    @node1.add(new CoffeeGL.Node @line1)
-    console.log(@node1)
-    #console.log(@top_node.children[0])
-    # @top_node.add(new CoffeeGL.Node(new LineSegment(x1, y1, x2, y2)))
-    # console.log(@top_node.children[0].geometry.v[0].p)
-
-  gui = new dat.GUI()
-  gui.remember(@)
-  x1 = gui.add(@, 'p1x')
-  x1.onChange((value) =>
-    add_line()
-  )
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
