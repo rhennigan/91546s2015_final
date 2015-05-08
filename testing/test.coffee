@@ -4,9 +4,6 @@ Vec2 = CoffeeGL.Vec2
 Vec3 = CoffeeGL.Vec3
 Vec4 = CoffeeGL.Vec4
 
-###LineSegment###
-# A simple line segment formed from a start point @p1, and end point @p2, and their corresponding
-# colors @c1 and @c2, which default to white if left out.
 class LineSegment
   constructor: (@p1, @p2, @c1, @c2) ->
     if not @c1?
@@ -17,40 +14,6 @@ class LineSegment
     @v = [new CoffeeGL.Vertex(@p1, @c1), new CoffeeGL.Vertex(@p2, @c2)]
     gl = CoffeeGL.Context.gl
     @layout = gl.LINES
-
-  intersection: (line) ->
-    [l1x1, l1y1] = [@p1.x, @p1.y]
-    [l1x2, l1y2] = [@p2.x, @p2.y]
-    [l2x1, l2y1] = [line.p1.x, line.p1.y]
-    [l2x2, l2y2] = [line.p2.x, line.p2.y]
-
-    a = l1x1-l1x2
-    b = l1y1-l1y2
-    c = l2x1-l2x2
-    d = l2y1-l2y2
-    det = a*d - b*c
-
-    console.log(det)
-
-    if det is 0
-      null
-    else
-      xi = (c*(l1x1*l1y2-l1y1*l1x2)-a*(l2x1*l1y2-l1y1*l2x2))/det
-      yi = (d*(l1x1*l1y2-l1y1*l1x2)-b*(l2x1*l2y2-l2y1*l2x2))/det
-
-      int1a = Math.min(l1x1, l1x2)
-      int1b = Math.max(l1x1, l1x2)
-
-      int2a = Math.min(l2x1, l2x2)
-      int2b = Math.max(l2x1, l2x2)
-
-      console.log(xi, yi)
-      if xi < int1a or  xi > int1b
-        null
-      else if xi < int2a or xi > int2b
-        null
-      else
-        new CoffeeGL.Vec2(xi, yi)
 
   parametric: (t) ->
     p1 = sc_mul3(@p1, 1-t)
