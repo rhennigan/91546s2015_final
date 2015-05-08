@@ -57,19 +57,19 @@ class LineSegment
     p2 = CoffeeGL.Vec3.multScalar(@p2, t)
     CoffeeGL.Vec3.add(p1, p2)
 
-vAdd = (u, v) -> new Vec3(u.x + v.x, u.y + v.y, u.z + v.z)
+add3 = (u, v) -> new Vec3(u.x + v.x, u.y + v.y, u.z + v.z)
 
-vSub = (u, v) -> new Vec3(u.x - v.x, u.y - v.y, u.z - v.z)
+sub3 = (u, v) -> new Vec3(u.x - v.x, u.y - v.y, u.z - v.z)
 
-vsMul = (v, s) -> new Vec3(v.x*s, v.y*s, v.z*s)
+smul3 = (v, s) -> new Vec3(v.x*s, v.y*s, v.z*s)
 
-vMul = (u, v) -> new Vec3(u.x*v.x, u.y*v.y, u.z*v.z)
+mul3 = (u, v) -> new Vec3(u.x*v.x, u.y*v.y, u.z*v.z)
 
-vDot = (u, v) -> u.x*v.x + u.y*v.y + u.z*v.z
+dot3 = (u, v) -> u.x*v.x + u.y*v.y + u.z*v.z
 
-vNorm = (v) -> Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
+norm3 = (v) -> Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
 
-vNormalize = (v) -> vsMul(v, 1 / vNorm(v))
+normalize3 = (v) -> smul3(v, 1 / norm3(v))
 
 det3 = (u, v, w) -> -(u.z*v.y*w.x) + u.y*v.z*w.x + u.z*v.x*w.y - u.x*v.z*w.y - u.y*v.x*w.z + u.x*v.y*w.z
 
@@ -101,25 +101,31 @@ intersection = (line1, line2) ->
   if not coplanar(line1, line2)
     null
   else
-    a = vSub(line1.p2, line1.p1)
-    b = vSub(line2.p2, line2.p1)
-    c = vSub(line2.p1, line1.p1)
+    [x1, x2] = [line1.p1, line1.p2]
+    [x3, x4] = [line2.p1, line2.p2]
 
-    an = vNormalize(a)
-    bn = vNormalize(b)
-    vn = vNormalize(v = cross3(an, bn))
-    n = vNorm(v)
-    n2 = n*n
+    a = sub3(x2, x1)
+    b = sub3(x4, x3)
+    c = sub3(x3, x1)
 
-    s1 = det3(c, bn, vn)
-    s2 = det3(c, an, vn)
+    n = norm3(cross3(a, b))
+    dot3(cross3(c, b), cross3(a, b)) / (n*n)
+
+#    an = vNormalize(a)
+#    bn = vNormalize(b)
+#    vn = vNormalize(v = cross3(an, bn))
+#    n = vNorm(v)
+#    n2 = n*n
+#
+#    s1 = det3(c, bn, vn)
+#    s2 = det3(c, an, vn)
 
 #    i1 = vAdd(line1.p1, vsMul(an, s1))
 #    i2 = vAdd(line2.p1, vsMul(bn, s2))
 #
 #    vsMul(vAdd(i1, i2), 0.5)
 
-    [s1, s2]
+#    [s1, s2]
 
 
 init = () ->
@@ -133,10 +139,12 @@ init = () ->
   blue = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
 
   a = () -> Math.random() * 580
-  l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 0), new CoffeeGL.Vec3(300, 300, 0), red, red)
-  l2 = new LineSegment(new CoffeeGL.Vec3(100, 300, 0), new CoffeeGL.Vec3(300, 100, 0), blue, blue)
+  l1 = new LineSegment(new CoffeeGL.Vec3(100, 100, 0), new CoffeeGL.Vec3(400, 400, 0), red, red)
+  l2 = new LineSegment(new CoffeeGL.Vec3(100, 400, 0), new CoffeeGL.Vec3(300, 200, 0), blue, blue)
+  s1 = intersection(l1, l2)
 
-  console.log(intersection(l1, l2))
+  console.log(s1)
+  console.log(l1.parametric(s1))
 
   r = new CoffeeGL.Request('basic_vertex_colour.glsl')
   r.get (data) =>
