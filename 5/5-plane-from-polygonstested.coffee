@@ -8,6 +8,22 @@ class Main
 
   init: () =>
 
+    polygon = (x, y, z, n) ->
+      step = 2 * Math.PI / n
+      center = new Vec3(x, y, z)
+      mesh = new CoffeeGL.TriangleMesh()
+      for i in [0...n]
+        theta1 = step * i
+        theta2 = step * (i + 1)
+        p1 = Vec3.add(center, new Vec3(Math.cos(theta1), Math.sin(theta1), 0))
+        p2 = Vec3.add(center, new Vec3(Math.cos(theta2), Math.sin(theta2), 0))
+        n1 = @noise.simplex3(p1.x, p1.y, p1.z)
+        n2 = @noise.simplex3(p2.x, p2.y, p2.z)
+        [p1.x, p1.y, p1.z] = [p1.x + n1, p1.y + n1, p1.z + n1]
+        [p2.x, p2.y, p2.z] = [p2.x + n2, p2.y + n2, p2.z + n2]
+
+
+
     @noise = new CoffeeGL.Noise.Noise()
 
     console.log(@noise.simplex3(1.0, 1.5, 2.0))

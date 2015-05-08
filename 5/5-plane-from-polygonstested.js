@@ -19,7 +19,25 @@
     }
 
     Main.prototype.init = function() {
-      var req;
+      var polygon, req;
+      polygon = function(x, y, z, n) {
+        var center, i, j, mesh, n1, n2, p1, p2, ref, ref1, ref2, results, step, theta1, theta2;
+        step = 2 * Math.PI / n;
+        center = new Vec3(x, y, z);
+        mesh = new CoffeeGL.TriangleMesh();
+        results = [];
+        for (i = j = 0, ref = n; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+          theta1 = step * i;
+          theta2 = step * (i + 1);
+          p1 = Vec3.add(center, new Vec3(Math.cos(theta1), Math.sin(theta1), 0));
+          p2 = Vec3.add(center, new Vec3(Math.cos(theta2), Math.sin(theta2), 0));
+          n1 = this.noise.simplex3(p1.x, p1.y, p1.z);
+          n2 = this.noise.simplex3(p2.x, p2.y, p2.z);
+          ref1 = [p1.x + n1, p1.y + n1, p1.z + n1], p1.x = ref1[0], p1.y = ref1[1], p1.z = ref1[2];
+          results.push((ref2 = [p2.x + n2, p2.y + n2, p2.z + n2], p2.x = ref2[0], p2.y = ref2[1], p2.z = ref2[2], ref2));
+        }
+        return results;
+      };
       this.noise = new CoffeeGL.Noise.Noise();
       console.log(this.noise.simplex3(1.0, 1.5, 2.0));
       this.top = new CoffeeGL.Node();
