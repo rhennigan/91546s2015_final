@@ -25,16 +25,11 @@ class Main
     @top.add(@light2)
     @top.add(@light3)
 
-    # Cylinder(radius, resolution, segments, height, colour)
     th = 0.025
     res = 10
     seg = 4
     h = 2.0
     col = new CoffeeGL.Colour.RGBA(0.5, 0.5, 0.5, 1.0)
-#    @c = new CoffeeGL.Shapes.Cylinder(th, res, seg, h, col)
-#    cn = new CoffeeGL.Node(@c)
-#    @top.add(cn)
-#    cn.matrix.translate(new CoffeeGL.Vec3(-1, -1,  0))
 
     @cube = new CoffeeGL.Node()
     @cs =
