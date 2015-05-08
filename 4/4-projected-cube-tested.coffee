@@ -31,12 +31,32 @@ class Main
     seg = 8
     h = 2
     col = new CoffeeGL.Colour.RGB(0.5, 0.5, 0.5)
-    @cube_skeleton =
+    @cs =
       for i in [1..12]
         c = new CoffeeGL.Shapes.Cylinder(th, res, seg, h, col)
         cn = new CoffeeGL.Node(c)
-        
+        @top.add(cn)
+        cn
 
+    @cs[ 0].matrix.translate(new CoffeeGL.Vec3(-1, -1,  0))
+    @cs[ 1].matrix.translate(new CoffeeGL.Vec3(-1,  1,  0))
+    @cs[ 2].matrix.translate(new CoffeeGL.Vec3( 1, -1,  0))
+    @cs[ 3].matrix.translate(new CoffeeGL.Vec3( 1,  1,  0))
+    @cs[ 4].matrix.translate(new CoffeeGL.Vec3(-1,  0, -1))
+    @cs[ 5].matrix.translate(new CoffeeGL.Vec3(-1,  0,  1))
+    @cs[ 6].matrix.translate(new CoffeeGL.Vec3( 1,  0, -1))
+    @cs[ 7].matrix.translate(new CoffeeGL.Vec3( 1,  0,  1))
+    @cs[ 8].matrix.translate(new CoffeeGL.Vec3( 0, -1, -1))
+    @cs[ 9].matrix.translate(new CoffeeGL.Vec3( 0, -1,  1))
+    @cs[10].matrix.translate(new CoffeeGL.Vec3( 0,  1, -1))
+    @cs[11].matrix.translate(new CoffeeGL.Vec3( 0,  1,  1))
+
+    GL.enable GL.CULL_FACE
+    GL.cullFace GL.BACK
+    GL.enable GL.DEPTH_TEST
+
+  update : (dt) =>
+    @light1.pos = @camera.pos
 
 main = new Main()
 cgl = new CoffeeGL.App('webgl-canvas', main, main.init, main.draw, main.update)

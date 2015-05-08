@@ -13,6 +13,7 @@
 
   Main = (function() {
     function Main() {
+      this.update = bind(this.update, this);
       this.init = bind(this.init, this);
     }
 
@@ -40,15 +41,36 @@
       seg = 8;
       h = 2;
       col = new CoffeeGL.Colour.RGB(0.5, 0.5, 0.5);
-      return this.cube_skeleton = (function() {
+      this.cs = (function() {
         var j, results;
         results = [];
         for (i = j = 1; j <= 12; i = ++j) {
           c = new CoffeeGL.Shapes.Cylinder(th, res, seg, h, col);
-          results.push(cn = new CoffeeGL.Node(c));
+          cn = new CoffeeGL.Node(c);
+          this.top.add(cn);
+          results.push(cn);
         }
         return results;
-      })();
+      }).call(this);
+      this.cs[0].matrix.translate(new CoffeeGL.Vec3(-1, -1, 0));
+      this.cs[1].matrix.translate(new CoffeeGL.Vec3(-1, 1, 0));
+      this.cs[2].matrix.translate(new CoffeeGL.Vec3(1, -1, 0));
+      this.cs[3].matrix.translate(new CoffeeGL.Vec3(1, 1, 0));
+      this.cs[4].matrix.translate(new CoffeeGL.Vec3(-1, 0, -1));
+      this.cs[5].matrix.translate(new CoffeeGL.Vec3(-1, 0, 1));
+      this.cs[6].matrix.translate(new CoffeeGL.Vec3(1, 0, -1));
+      this.cs[7].matrix.translate(new CoffeeGL.Vec3(1, 0, 1));
+      this.cs[8].matrix.translate(new CoffeeGL.Vec3(0, -1, -1));
+      this.cs[9].matrix.translate(new CoffeeGL.Vec3(0, -1, 1));
+      this.cs[10].matrix.translate(new CoffeeGL.Vec3(0, 1, -1));
+      this.cs[11].matrix.translate(new CoffeeGL.Vec3(0, 1, 1));
+      GL.enable(GL.CULL_FACE);
+      GL.cullFace(GL.BACK);
+      return GL.enable(GL.DEPTH_TEST);
+    };
+
+    Main.prototype.update = function(dt) {
+      return this.light1.pos = this.camera.pos;
     };
 
     return Main;
