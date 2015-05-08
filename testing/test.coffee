@@ -66,23 +66,23 @@ det4 = (u, v, w, x) ->
     u.z*v.x*w.w*x.y + u.x*v.z*w.w*x.y + u.z*v.w*w.x*x.y - u.w*v.z*w.x*x.y -
     u.x*v.w*w.z*x.y + u.w*v.x*w.z*x.y + u.y*v.x*w.w*x.z - u.x*v.y*w.w*x.z -
     u.y*v.w*w.x*x.z + u.w*v.y*w.x*x.z + u.x*v.w*w.y*x.z - u.w*v.x*w.y*x.z
-  
-intersection = (line1, line2) ->
-  [x1, y1, z1] = [line1.p1.x, line1.p1.y, line1.p1.z]
-  [x2, y2, z2] = [line1.p2.x, line1.p2.y, line1.p2.z]
-  [x3, y3, z3] = [line2.p1.x, line2.p1.y, line2.p1.z]
-  [x4, y4, z4] = [line2.p2.x, line2.p2.y, line2.p2.z]
 
-  switch
-    when x1 == x3 and y1 == y3 and z1 == z3, x1 == x4 and y1 == y4 and z1 == z4
-      new Vec3(x1, y1, z1)
-    when x2 == x3 and y2 == y3 and z2 == z3, x2 == x4 and y2 == y4 and z2 == z4
-      new Vec3(x2, y2, z2)
-    else
-      ux = ((x3 - x4)*(y1 - y2) - (x1 - x2)*(y3 - y4))
-      uy = ((x3 - x4)*(z1 - z2) - (x1 - x2)*(z3 - z4))
-      uz = ((y3 - y4)*(z1 - z2) - (y1 - y2)*(z3 - z4))
-      n = ux*ux + uy*uy + uz*uz
+cross3 = (u, v) -> new Vec3(-(uz*vy) + uy*vz, uz*vx - ux*vz, -(uy*vx) + ux*vy)
+cross4 = (u, v, w) ->
+  
+
+coplanar = (line1, line2) ->
+  u1 = new Vec4(line1.p1.x, line1.p1.y, line1.p1.z, 1)
+  v1 = new Vec4(line1.p2.x, line1.p2.y, line1.p2.z, 1)
+  u2 = new Vec4(line2.p1.x, line2.p1.y, line2.p1.z, 1)
+  v2 = new Vec4(line2.p2.x, line2.p2.y, line2.p2.z, 1)
+  det4(u1, v1, u2, v2) == 0
+
+intersection = (line1, line2) ->
+  if not coplanar(line1, line2)
+    null
+  else
+
 
 
 init = () ->
