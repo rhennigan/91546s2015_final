@@ -106,22 +106,27 @@ class Viewer
     @set3 = false
     @set4 = false
 
-    @px = 0
-    @py = 0
-    @dx = 0
-    @dy = 0
-
   onMouseMove: (event) ->
-    if dragging
-      [x, y] = [event.mouseX, event.mouseY]
-      [@dx, @dy] = [x - @px, y - @py]
-      [@px, @py] = [x, y]
+    if @dragging
+      xy = [x, y] = [event.mouseX, event.mouseY]
+      switch
+        when 
     @
 
   onMouseDown: (event) ->
-    [@px, @py] = [event.mouseX, event.mouseY]
-    [@dx, @dy] = [0, 0]
-    @
+    xy = [event.mouseX, event.mouseY]
+    @dragging = true
+    switch
+      when not @set1
+        [@p1.x, @p1.y] = xy
+        [@p2.x, @p2.y] = xy
+        @set1 = true
+      when not @set3
+        [@p3.x, @p3.y] = xy
+        [@p4.x, @p4.y] = xy
+        @set3 = true
+      else
+        @
 
   onMouseUp: (event) ->
     @
