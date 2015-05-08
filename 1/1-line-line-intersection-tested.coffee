@@ -1,5 +1,5 @@
 EPS = 0.00001
-ZPLANE = -1
+ZPLANE = -10
 
 Vec2 = CoffeeGL.Vec2
 Vec3 = CoffeeGL.Vec3
@@ -111,14 +111,19 @@ init = () ->
     line = random_line()
     lines.push(line)
     @top_node.add(new CoffeeGL.Node(line))
-    for other_line in lines
-      p = intersection_point(line, other_line)
+
+  # test for intersections and draw a red dot wherever they are found
+  for i in [0...lines.length]
+    line = lines[i]
+    for j in [i...lines.length]
+      p = intersection_point(line, lines[j])
       if p
-        s = new CoffeeGL.Shapes.Sphere(5, 5, p, RED)
+        p.z = ZPLANE + 1
+        s = new CoffeeGL.Shapes.Sphere(5, 10, p, RED)
         for vert in s.v
           vert.c.b = 0
           vert.c.g = 0
-          vert.c.a = 0.75
+          vert.c.a = 0.5
         @top_node.add(new CoffeeGL.Node(s))
 
   @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
