@@ -115,9 +115,7 @@ init = () ->
   @node1.add @camera
   @node2.add @camera
 
-  console.log(@node1)
-
-  @node1.remove(@line1)
+  
 
   gui = new dat.GUI()
   gui.remember(@)
