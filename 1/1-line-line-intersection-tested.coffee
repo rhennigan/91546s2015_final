@@ -88,55 +88,48 @@ intersection_point = (line1, line2) ->
   if 0 <= s1 <= 1 and 0 <= s2 <= 1 then line1.parametric(s1) else null
 
 
-class Viewer
 
-  constructor: () ->
+init = () ->
+  r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
+  r.get (data) =>
+    shader = new CoffeeGL.Shader(data)
+    shader.bind()
 
-    r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
-    r.get (data) =>
-      shader = new CoffeeGL.Shader(data)
-      shader.bind()
+  CoffeeGL.Context.mouseMove.add @onMouseMove, @
+  CoffeeGL.Context.mouseDown.add @onMouseDown, @
+  CoffeeGL.Context.mouseUp.add @onMouseUp, @
 
-    CoffeeGL.Context.mouseMove.add @onMouseMove, @
-    CoffeeGL.Context.mouseDown.add @onMouseDown, @
-    CoffeeGL.Context.mouseUp.add @onMouseUp, @
+  @dragging = false
 
-    @dragging = false
+  @set1 = false
+  @set2 = false
+  @set3 = false
+  @set4 = false
 
-    @set1 = false
-    @set2 = false
-    @set3 = false
-    @set4 = false
+  @line1 = new LineSegment(
+    new Vec3(0, 0, 0),
+    new Vec3(0, 0, 0),
+    new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0),
+    new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0))
 
-    @line1 = new LineSegment(
-      new Vec3(0, 0, 0),
-      new Vec3(0, 0, 0),
-      new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0),
-      new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0))
+  @line2 = new LineSegment(
+    new Vec3(0, 0, 0),
+    new Vec3(0, 0, 0),
+    new CoffeeGL.Colour.RGBA(0.0, 1.0, 0.0, 1.0),
+    new CoffeeGL.Colour.RGBA(0.0, 1.0, 0.0, 1.0))
 
-    @line2 = new LineSegment(
-      new Vec3(0, 0, 0),
-      new Vec3(0, 0, 0),
-      new CoffeeGL.Colour.RGBA(0.0, 1.0, 0.0, 1.0),
-      new CoffeeGL.Colour.RGBA(0.0, 1.0, 0.0, 1.0))
+  @node1 = new CoffeeGL.Node @line1
+  @node2 = new CoffeeGL.Node @line2
 
-    @nodes = []
-    @nodes.push(new CoffeeGL.Node @line1)
-    @nodes.push(new CoffeeGL.Node @line2)
+  @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
 
-    @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
-
-    @nodes[1].add @camera
-    @nodes[2].add @camera
-
-  draw = () ->
-    GL.clearColor(0.15, 0.15, 0.15, 1.0)
-    GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-    @nodel1.draw()
-    @nodel2.draw()
+  console.log(@node1, @node2)
+  @node1.add @camera
+  @node2.add @camera
 
   onMouseMove: (event) ->
     xy = [x, y] = [event.mouseX, event.mouseY]
+    [@line1.p1.x, @line1.p1.y] = xy
     @
 
   onMouseDown: (event) ->
@@ -149,53 +142,10 @@ class Viewer
   onMouseOver: (event) ->
     @
 
-init = () ->
-  drag_start = new Vec2(0, 0)
-  drag_current = new Vec2(0, 0)
-  dragging = false
-  placed_one = false
-  placed = new Vec2(0, 0)
-
-
-  CoffeeGL.Context.mouseDown.add (event) =>
-    xy = [x, y] = [event.mouseX, event.mouseY]
-    [drag_start.x, drag_start.y] = [drag_current.x, drag_current.y] = xy
-    dragging = true
-    if not placed_one
-      [placed.x, placed.y] = xy
-      placed_one = true
-
-  CoffeeGL.Context.mouseMove.add (event) =>
-    if dragging then [drag_current.x, drag_current.y] = [event.mouseX, event.mouseY]
-
-
-  nodes = []
-
-  red = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
-  blue = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
-
-  a = () -> Math.random() * 580
-  l1 = new LineSegment(new Vec3(a(), a(), 0), new Vec3(a(), a(), 0), red, red)
-  l2 = new LineSegment(new Vec3(a(), a(), 0), new Vec3(a(), a(), 0), blue, blue)
-  [s1, s2] = intersection_params(l1, l2)
-
-  r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
-  r.get (data) =>
-    shader = new CoffeeGL.Shader(data)
-    shader.bind()
-
-  @nodel1 = new CoffeeGL.Node l1
-  @nodel2 = new CoffeeGL.Node l2
-
-  @cameral = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
-
-  @nodel1.add @cameral
-  @nodel2.add @cameral
-
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
   GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-  @nodel1.draw()
-  @nodel2.draw()
+  @node1.draw()
+  @node2.draw()
 
 cgl = new CoffeeGL.App('webgl-canvas', this, init, draw)
