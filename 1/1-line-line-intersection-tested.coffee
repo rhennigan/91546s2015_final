@@ -88,6 +88,8 @@ intersection_point = (line1, line2) ->
   if 0 <= s1 <= 1 and 0 <= s2 <= 1 then line1.parametric(s1) else null
 
 init = () ->
+  @top_node = new CoffeeGL.Node()
+
   r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
   r.get (data) =>
     shader = new CoffeeGL.Shader(data)
@@ -110,24 +112,25 @@ init = () ->
   @node1 = new CoffeeGL.Node @line1
   @node2 = new CoffeeGL.Node @line2
 
+  @top_node.add(@node1, @node2)
+
   @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
+  @top_node.add(@camera)
 
-  @node1.add @camera
-  @node2.add @camera
-
-  
+  add_line: (x1, y1, x2, y2) ->
+    line = new LineSegment(new Vec2(x1, y1), new Vec2(x2, y2))
+    @top_node.add(new CoffeeGL.Node line)
 
   gui = new dat.GUI()
   gui.remember(@)
   x1 = gui.add(@, 'p1x')
   x1.onChange((value) =>
-    draw()
+    @add_line(@p1x, 1, 1, 500)
   )
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
   GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-  @node1.draw()
-  @node2.draw()
+  @top_node?.draw()
 
 cgl = new CoffeeGL.App('webgl-canvas', this, init, draw)
