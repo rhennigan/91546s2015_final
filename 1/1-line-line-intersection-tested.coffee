@@ -117,15 +117,14 @@ init = () ->
   @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
   @top_node.add(@camera)
 
-  add_line: (x1, y1, x2, y2) ->
-    line = new LineSegment(new Vec2(x1, y1), new Vec2(x2, y2))
-    @top_node.add(new CoffeeGL.Node line)
+  add_line = (x1, y1, x2, y2) ->
+    console.log(@top_node.children[0].geometry)
 
   gui = new dat.GUI()
   gui.remember(@)
   x1 = gui.add(@, 'p1x')
   x1.onChange((value) =>
-    @add_line(@p1x, 1, 1, 500)
+    add_line(@p1x, 1, 1, 500)
   )
 
 draw = () ->
