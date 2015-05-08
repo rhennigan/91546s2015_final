@@ -87,24 +87,11 @@ intersection_point = (line1, line2) ->
   [s1, s2] = intersection_params(line1, line2)
   if 0 <= s1 <= 1 and 0 <= s2 <= 1 then line1.parametric(s1) else null
 
-
-
 init = () ->
   r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
   r.get (data) =>
     shader = new CoffeeGL.Shader(data)
     shader.bind()
-
-  CoffeeGL.Context.mouseMove.add @onMouseMove, @
-  CoffeeGL.Context.mouseDown.add @onMouseDown, @
-  CoffeeGL.Context.mouseUp.add @onMouseUp, @
-
-  @dragging = false
-
-  @set1 = false
-  @set2 = false
-  @set3 = false
-  @set4 = false
 
   @line1 = new LineSegment(
     new Vec3(0, 0, 0),
@@ -126,21 +113,6 @@ init = () ->
   console.log(@node1, @node2)
   @node1.add @camera
   @node2.add @camera
-
-  onMouseMove: (event) ->
-    xy = [x, y] = [event.mouseX, event.mouseY]
-    [@line1.p1.x, @line1.p1.y] = xy
-    @
-
-  onMouseDown: (event) ->
-    xy = [event.mouseX, event.mouseY]
-    console.log(xy)
-
-  onMouseUp: (event) ->
-    @
-
-  onMouseOver: (event) ->
-    @
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
