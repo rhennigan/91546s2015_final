@@ -91,12 +91,44 @@ intersection_point = (line1, line2) ->
 class Viewer
 
   constructor: () ->
+    CoffeeGL.Context.mouseMove.add @onMouseMove, @
+    CoffeeGL.Context.mouseDown.add @onMouseDown, @
+    CoffeeGL.Context.mouseUp.add @onMouseUp, @
+
+    @dragging = false
+    @p1 = new Vec2(0, 0)
+    @p2 = new Vec2(0, 0)
+    @p3 = new Vec2(0, 0)
+    @p4 = new Vec2(0, 0)
+
+    @set1 = false
+    @set2 = false
+    @set3 = false
+    @set4 = false
+
     @px = 0
     @py = 0
     @dx = 0
     @dy = 0
-    
 
+  onMouseMove: (event) ->
+    if dragging
+      [x, y] = [event.mouseX, event.mouseY]
+      [@dx, @dy] = [x - @px, y - @py]
+      [@px, @py] = [x, y]
+    @
+
+  onMouseDown: (event) ->
+    [@px, @py] = [event.mouseX, event.mouseY]
+    [@dx, @dy] = [0, 0]
+    @
+
+  onMouseUp: (event) ->
+    @
+
+  onMouseOver: (event) ->
+    if @px == 0 and @py == 0
+      [@px, @py] = [event.mouseX, event.mouseY]
 
 init = () ->
   drag_start = new Vec2(0, 0)
