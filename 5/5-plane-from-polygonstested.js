@@ -35,15 +35,15 @@
     }
 
     Main.prototype.init = function() {
-      var p, pn, polygon, req, testPolygons, x, y;
+      var p, polygon, req, testPolygons, x, y;
       this.noise = new CoffeeGL.Noise.Noise();
       console.log(this.noise);
       polygon = (function(_this) {
         return function(x, y, z, n) {
-          var center, i, j, mesh, n1, n2, normal, normals, p1, p2, ref, ref1, ref2, step, t, theta1, theta2;
+          var center, i, j, n1, n2, normal, normals, p1, p2, poly, ref, ref1, ref2, step, t, theta1, theta2;
           step = 2 * Math.PI / n;
           center = new CoffeeGL.Vec3(x, y, z);
-          mesh = new CoffeeGL.TriangleMesh();
+          poly = new CoffeeGL.Node();
           normals = [];
           for (i = j = 0, ref = n; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
             theta1 = step * i;
@@ -57,9 +57,10 @@
             normal = normalize3(cross3(CoffeeGL.Vec3.sub(p1, center), CoffeeGL.Vec3.sub(p2, center)));
             normals.push(normal);
             t = new CoffeeGL.Triangle(center, p1, p2, normal);
-            mesh.addTriangle(t);
+            poly.add(t);
           }
-          return mesh;
+          console.log(poly);
+          return poly;
         };
       })(this);
       console.log(this.noise.simplex3(1.0, 1.5, 2.0));
@@ -74,7 +75,7 @@
       })(this));
       this.camera = new CoffeeGL.Camera.MousePerspCamera(new CoffeeGL.Vec3(0, 0, 15));
       this.top.add(this.camera);
-      this.light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGBA.WHITE());
+      this.light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGB.WHITE());
       this.top.add(this.light);
       testPolygons = (function() {
         var j, results;
@@ -85,9 +86,8 @@
             results1 = [];
             for (y = k = -2; k <= 2; y = ++k) {
               p = polygon(x, y, 0, 5);
-              pn = new Coffee.Node(p);
-              this.top.add(pn);
-              results1.push(pn);
+              this.top.add(p);
+              results1.push(p);
             }
             return results1;
           }).call(this));

@@ -18,7 +18,7 @@ class Main
     polygon = (x, y, z, n) =>
       step = 2 * Math.PI / n
       center = new CoffeeGL.Vec3(x, y, z)
-      mesh = new CoffeeGL.TriangleMesh()
+      poly = new CoffeeGL.Node()
       normals = []
       for i in [0...n]
         theta1 = step * i
@@ -32,10 +32,9 @@ class Main
         normal = normalize3(cross3(CoffeeGL.Vec3.sub(p1, center), CoffeeGL.Vec3.sub(p2, center)))
         normals.push(normal)
         t = new CoffeeGL.Triangle(center, p1, p2, normal)
-        mesh.addTriangle(t)
-      mesh
-
-
+        poly.add(t)
+      console.log(poly)
+      poly
 
 
 
@@ -52,16 +51,15 @@ class Main
     @camera = new CoffeeGL.Camera.MousePerspCamera(new CoffeeGL.Vec3(0, 0, 15))
     @top.add(@camera)
 
-    @light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGBA.WHITE())
+    @light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGB.WHITE())
     @top.add(@light)
 
     testPolygons =
       for x in [-2..2]
         for y in [-2..2]
           p = polygon(x, y, 0, 5)
-          pn = new Coffee.Node(p)
-          @top.add(pn)
-          pn
+          @top.add(p)
+          p
 
     # Cylinder(radius, resolution, segments, height, colour)
 #    th = 0.025
