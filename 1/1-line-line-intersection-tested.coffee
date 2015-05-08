@@ -90,6 +90,8 @@ intersection_point = (line1, line2) ->
 init = () ->
   @top_node = new CoffeeGL.Node()
 
+  RED = new CoffeeGL.Colour.RGBA(1, 0, 0, 1)
+
   r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
   r.get (data) =>
     shader = new CoffeeGL.Shader(data)
@@ -102,6 +104,21 @@ init = () ->
     c2 = new CoffeeGL.Colour.RGBA(Math.random(), Math.random(), Math.random(), 1.0)
     line = new LineSegment(p1, p2, c1, c2)
     line
+
+  lines = []
+  for i in [1..10]
+    line = random_line()
+    lines.push(line)
+    @top_node.add(new CoffeeGL.Node(line))
+    for other_line in lines
+      p = intersection_point(line, other_line)
+
+      if p
+        console.log(p)
+        s = new CoffeeGL.Shapes.Sphere(5, 10, p, RED)
+        @top_node.add(new CoffeeGL.Node(s))
+
+
 #
 #  @p1 = new Vec3(100, 100, 0)
 #  @p2 = new Vec3(400, 400, 0)
