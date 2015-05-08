@@ -67,9 +67,14 @@ det4 = (u, v, w, x) ->
     u.x*v.w*w.z*x.y + u.w*v.x*w.z*x.y + u.y*v.x*w.w*x.z - u.x*v.y*w.w*x.z -
     u.y*v.w*w.x*x.z + u.w*v.y*w.x*x.z + u.x*v.w*w.y*x.z - u.w*v.x*w.y*x.z
 
-cross3 = (u, v) -> new Vec3(-(uz*vy) + uy*vz, uz*vx - ux*vz, -(uy*vx) + ux*vy)
+cross3 = (u, v) -> new Vec3(-(u.z*v.y) + u.y*v.z, u.z*v.x - u.x*v.z, -(u.y*v.x) + u.x*v.y)
 cross4 = (u, v, w) ->
-  
+  x1 = -(u.z*v.y*w.w) + u.y*v.z*w.w + u.z*v.w*w.y - u.w*v.z*w.y - u.y*v.w*w.z + u.w*v.y*w.z
+  x2 = u.z*v.x*w.w - u.x*v.z*w.w - u.z*v.w*w.x + u.w*v.z*w.x + u.x*v.w*w.z - u.w*v.x*w.z
+  x3 = -(u.y*v.x*w.w) + u.x*v.y*w.w + u.y*v.w*w.x - u.w*v.y*w.x - u.x*v.w*w.y + u.w*v.x*w.y
+  x4 = u.z*v.y*w.x - u.y*v.z*w.x - u.z*v.x*w.y + u.x*v.z*w.y + u.y*v.x*w.z - u.x*v.y*w.z
+  new Vec4(x1, x2, x3, x4)
+
 
 coplanar = (line1, line2) ->
   u1 = new Vec4(line1.p1.x, line1.p1.y, line1.p1.z, 1)
