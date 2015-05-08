@@ -123,7 +123,7 @@ drawScene = ->
   gl.drawArrays gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems
   return
 
-webGLStart = ->
+window.webGLStart = ->
   canvas = document.getElementById('lesson01-canvas')
   initGL canvas
   initShaders()
