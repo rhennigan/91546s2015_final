@@ -40,7 +40,7 @@
       th = 0.025;
       res = 10;
       seg = 4;
-      h = 1.0;
+      h = 2.0;
       col = new CoffeeGL.Colour.RGBA(0.5, 0.5, 0.5, 1.0);
       this.cs = (function() {
         var j, results;
@@ -53,19 +53,26 @@
         }
         return results;
       }).call(this);
-      this.cs[0].matrix.translate(new CoffeeGL.Vec3(-1, -1, 0));
+      this.cs[0].matrix.translate(new CoffeeGL.Vec3(-1, 0, 1));
       this.cs[1].matrix.translate(new CoffeeGL.Vec3(-1, 1, 0));
       this.cs[2].matrix.translate(new CoffeeGL.Vec3(1, -1, 0));
       this.cs[3].matrix.translate(new CoffeeGL.Vec3(1, 1, 0));
-      this.cs[4].matrix.rotateX();
+      this.cs[4].matrix.rotate(new CoffeeGL.Vec3(1, 0, 0), Math.PI / 2);
       this.cs[4].matrix.translate(new CoffeeGL.Vec3(-1, 0, -1));
+      this.cs[5].matrix.rotate(new CoffeeGL.Vec3(1, 0, 0), Math.PI / 2);
       this.cs[5].matrix.translate(new CoffeeGL.Vec3(-1, 0, 1));
+      this.cs[6].matrix.rotate(new CoffeeGL.Vec3(1, 0, 0), Math.PI / 2);
       this.cs[6].matrix.translate(new CoffeeGL.Vec3(1, 0, -1));
+      this.cs[7].matrix.rotate(new CoffeeGL.Vec3(1, 0, 0), Math.PI / 2);
       this.cs[7].matrix.translate(new CoffeeGL.Vec3(1, 0, 1));
-      this.cs[8].matrix.translate(new CoffeeGL.Vec3(0, -1, -1));
-      this.cs[9].matrix.translate(new CoffeeGL.Vec3(0, -1, 1));
-      this.cs[10].matrix.translate(new CoffeeGL.Vec3(0, 1, -1));
-      this.cs[11].matrix.translate(new CoffeeGL.Vec3(0, 1, 1));
+      this.cs[8].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2);
+      this.cs[8].matrix.translate(new CoffeeGL.Vec3(1, 0, -1));
+      this.cs[9].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2);
+      this.cs[9].matrix.translate(new CoffeeGL.Vec3(1, 0, 1));
+      this.cs[10].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2);
+      this.cs[10].matrix.translate(new CoffeeGL.Vec3(-1, 0, -1));
+      this.cs[11].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2);
+      this.cs[11].matrix.translate(new CoffeeGL.Vec3(-1, 0, 1));
       GL.enable(GL.CULL_FACE);
       GL.cullFace(GL.BACK);
       return GL.enable(GL.DEPTH_TEST);

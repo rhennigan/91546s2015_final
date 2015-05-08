@@ -29,7 +29,7 @@ class Main
     th = 0.025
     res = 10
     seg = 4
-    h = 1.0
+    h = 2.0
     col = new CoffeeGL.Colour.RGBA(0.5, 0.5, 0.5, 1.0)
 #    @c = new CoffeeGL.Shapes.Cylinder(th, res, seg, h, col)
 #    cn = new CoffeeGL.Node(@c)
@@ -43,21 +43,29 @@ class Main
         @top.add(cn)
         cn
 
-    @cs[ 0].matrix.translate(new CoffeeGL.Vec3(-1, -1,  0))
+
+    @cs[ 0].matrix.translate(new CoffeeGL.Vec3(-1, 0,  1))
     @cs[ 1].matrix.translate(new CoffeeGL.Vec3(-1,  1,  0))
     @cs[ 2].matrix.translate(new CoffeeGL.Vec3( 1, -1,  0))
     @cs[ 3].matrix.translate(new CoffeeGL.Vec3( 1,  1,  0))
 
-    @cs[ 4].matrix.rotateX()
+    @cs[ 4].matrix.rotate(new CoffeeGL.Vec3(1, 0,  0), Math.PI / 2)
     @cs[ 4].matrix.translate(new CoffeeGL.Vec3(-1,  0, -1))
+    @cs[ 5].matrix.rotate(new CoffeeGL.Vec3(1, 0,  0), Math.PI / 2)
     @cs[ 5].matrix.translate(new CoffeeGL.Vec3(-1,  0,  1))
+    @cs[ 6].matrix.rotate(new CoffeeGL.Vec3(1, 0,  0), Math.PI / 2)
     @cs[ 6].matrix.translate(new CoffeeGL.Vec3( 1,  0, -1))
+    @cs[ 7].matrix.rotate(new CoffeeGL.Vec3(1, 0,  0), Math.PI / 2)
     @cs[ 7].matrix.translate(new CoffeeGL.Vec3( 1,  0,  1))
 
-    @cs[ 8].matrix.translate(new CoffeeGL.Vec3( 0, -1, -1))
-    @cs[ 9].matrix.translate(new CoffeeGL.Vec3( 0, -1,  1))
-    @cs[10].matrix.translate(new CoffeeGL.Vec3( 0,  1, -1))
-    @cs[11].matrix.translate(new CoffeeGL.Vec3( 0,  1,  1))
+    @cs[ 8].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2)
+    @cs[ 8].matrix.translate(new CoffeeGL.Vec3( 1, 0, -1))
+    @cs[ 9].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2)
+    @cs[ 9].matrix.translate(new CoffeeGL.Vec3( 1, 0,  1))
+    @cs[10].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2)
+    @cs[10].matrix.translate(new CoffeeGL.Vec3(-1,  0, -1))
+    @cs[11].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2)
+    @cs[11].matrix.translate(new CoffeeGL.Vec3(-1,  0,  1))
 
     GL.enable GL.CULL_FACE
     GL.cullFace GL.BACK
