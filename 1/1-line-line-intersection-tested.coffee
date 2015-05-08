@@ -93,26 +93,38 @@ init = () ->
     shader = new CoffeeGL.Shader(data)
     shader.bind()
 
-  @line1 = new LineSegment(
-    new Vec3(0, 0, 0),
-    new Vec3(0, 0, 0),
-    new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0),
-    new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0))
+  @p1x = 100
+  @p1y = 100
 
-  @line2 = new LineSegment(
-    new Vec3(0, 0, 0),
-    new Vec3(0, 0, 0),
-    new CoffeeGL.Colour.RGBA(0.0, 1.0, 0.0, 1.0),
-    new CoffeeGL.Colour.RGBA(0.0, 1.0, 0.0, 1.0))
+  @p1 = new Vec3(@p1x, @p1y, 0)
+  @p2 = new Vec3(400, 400, 0)
+  @p3 = new Vec3(100, 400, 0)
+  @p4 = new Vec3(400, 100, 0)
+
+  @c1 = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
+  @c2 = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
+
+  @line1 = new LineSegment(@p1, @p2, @c1, @c1)
+  @line2 = new LineSegment(@p3, @p4, @c2, @c2)
 
   @node1 = new CoffeeGL.Node @line1
   @node2 = new CoffeeGL.Node @line2
 
   @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
 
-  console.log(@node1, @node2)
   @node1.add @camera
   @node2.add @camera
+
+  console.log(@node1)
+
+  @node1.remove(@line1)
+
+  gui = new dat.GUI()
+  gui.remember(@)
+  x1 = gui.add(@, 'p1x')
+  x1.onChange((value) =>
+    draw()
+  )
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
