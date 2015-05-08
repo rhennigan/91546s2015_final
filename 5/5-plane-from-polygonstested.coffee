@@ -3,28 +3,41 @@ GREEN = new CoffeeGL.Colour.RGB(0.4,0.796078,0.223529)
 BLUE = new CoffeeGL.Colour.RGB(0.0470588,0.352941,0.505882)
 GRAY = new CoffeeGL.Colour.RGB(0.556863,0.678431,0.670588)
 
+sc_mul3 = (v, s) -> new CoffeeGL.Vec3(v.x*s, v.y*s, v.z*s)
+norm3 = (v) -> Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
+normalize3 = (v) -> sc_mul3(v, 1 / norm3(v))
+cross3 = (u, v) -> new CoffeeGL.Vec3(-(u.z*v.y) + u.y*v.z, u.z*v.x - u.x*v.z, -(u.y*v.x) + u.x*v.y)
 
 class Main
 
   init: () =>
 
-    polygon = (x, y, z, n) ->
+    @noise = new CoffeeGL.Noise.Noise()
+    console.log(@noise)
+
+    polygon = (x, y, z, n) =>
       step = 2 * Math.PI / n
-      center = new Vec3(x, y, z)
+      center = new CoffeeGL.Vec3(x, y, z)
       mesh = new CoffeeGL.TriangleMesh()
+      normals = []
       for i in [0...n]
         theta1 = step * i
         theta2 = step * (i + 1)
-        p1 = Vec3.add(center, new Vec3(Math.cos(theta1), Math.sin(theta1), 0))
-        p2 = Vec3.add(center, new Vec3(Math.cos(theta2), Math.sin(theta2), 0))
+        p1 = CoffeeGL.Vec3.add(center, new CoffeeGL.Vec3(Math.cos(theta1), Math.sin(theta1), 0))
+        p2 = CoffeeGL.Vec3.add(center, new CoffeeGL.Vec3(Math.cos(theta2), Math.sin(theta2), 0))
         n1 = @noise.simplex3(p1.x, p1.y, p1.z)
         n2 = @noise.simplex3(p2.x, p2.y, p2.z)
         [p1.x, p1.y, p1.z] = [p1.x + n1, p1.y + n1, p1.z + n1]
         [p2.x, p2.y, p2.z] = [p2.x + n2, p2.y + n2, p2.z + n2]
+        normal = normalize3(cross3(CoffeeGL.Vec3.sub(p1, center), CoffeeGL.Vec3.sub(p2, center)))
+        normals.push(normal)
+        t = new CoffeeGL.Triangle(center, p1, p2, normal)
+        mesh.addTriangle(t)
+      mesh
 
 
 
-    @noise = new CoffeeGL.Noise.Noise()
+
 
     console.log(@noise.simplex3(1.0, 1.5, 2.0))
 
@@ -41,6 +54,14 @@ class Main
 
     @light = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(10, 0, 0), new CoffeeGL.Colour.RGBA.WHITE())
     @top.add(@light)
+
+    testPolygons =
+      for x in [-2..2]
+        for y in [-2..2]
+          p = polygon(x, y, 0, 5)
+          pn = new Coffee.Node(p)
+          @top.add(pn)
+          pn
 
     # Cylinder(radius, resolution, segments, height, colour)
 #    th = 0.025
@@ -83,8 +104,8 @@ class Main
 #    @cs[10].matrix.translate(new CoffeeGL.Vec3(-1,  0, -1))
 #    @cs[11].matrix.rotate(new CoffeeGL.Vec3(0, 0, 1), Math.PI / 2)
 #    @cs[11].matrix.translate(new CoffeeGL.Vec3(-1,  0,  1))
-
-    @top.add(@cube)
+#
+#    @top.add(@cube)
 
     GL.enable GL.CULL_FACE
     GL.cullFace GL.BACK
