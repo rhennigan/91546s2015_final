@@ -88,6 +88,15 @@ intersection_point = (line1, line2) ->
   if 0 <= s1 <= 1 and 0 <= s2 <= 1 then line1.parametric(s1) else null
 
 
+class Viewer
+
+  constructor: () ->
+    @px = 0
+    @py = 0
+    @dx = 0
+    @dy = 0
+    
+
 
 init = () ->
   drag_start = new Vec2(0, 0)
@@ -98,15 +107,15 @@ init = () ->
 
 
   CoffeeGL.Context.mouseDown.add (event) =>
-    console.log(placed)
-    drag_start.x = event.mouseX
-    drag_start.y = event.mouseY
-
+    xy = [x, y] = [event.mouseX, event.mouseY]
+    [drag_start.x, drag_start.y] = [drag_current.x, drag_current.y] = xy
     dragging = true
     if not placed_one
-      placed.x = drag_start.x
-      placed.y = drag_start.y
+      [placed.x, placed.y] = xy
+      placed_one = true
 
+  CoffeeGL.Context.mouseMove.add (event) =>
+    if dragging then [drag_current.x, drag_current.y] = [event.mouseX, event.mouseY]
 
 
   nodes = []
