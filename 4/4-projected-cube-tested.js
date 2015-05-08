@@ -19,7 +19,7 @@
     }
 
     Main.prototype.init = function() {
-      var cn, col, h, req, res, seg, th;
+      var c, cn, col, h, i, req, res, seg, th;
       this.top = new CoffeeGL.Node();
       req = new CoffeeGL.Request('4-projected-cube-tested.glsl');
       req.get((function(_this) {
@@ -29,26 +29,59 @@
           return _this.shader.setUniform3v("uAmbientLightingColor", new CoffeeGL.Colour.RGB(0.1, 0.1, 0.1));
         };
       })(this));
-      this.camera = new CoffeeGL.Camera.MousePerspCamera(new CoffeeGL.Vec3(0, 0, 25));
+      this.camera = new CoffeeGL.Camera.MousePerspCamera(new CoffeeGL.Vec3(0, 0, 5));
       this.top.add(this.camera);
       this.light1 = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(1, 0, 0), RED);
+      this.light2 = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(0, 1, 0), GREEN);
+      this.light3 = new CoffeeGL.Light.PointLight(new CoffeeGL.Vec3(0, 0, 1), BLUE);
       this.top.add(this.light1);
-      th = 0.1;
+      this.top.add(this.light2);
+      this.top.add(this.light3);
+      th = 0.025;
       res = 10;
-      seg = 8;
-      h = 2;
-      col = new CoffeeGL.Colour.RGB(0.5, 0.5, 0.5);
-      this.c = new CoffeeGL.Shapes.Cylinder(th, res, seg, h, col);
-      cn = new CoffeeGL.Node(this.c);
-      this.top.add(cn);
-      cn.matrix.translate(new CoffeeGL.Vec3(-1, -1, 0));
+      seg = 4;
+      h = 1.0;
+      col = new CoffeeGL.Colour.RGBA(0.5, 0.5, 0.5, 1.0);
+      this.cs = (function() {
+        var j, results;
+        results = [];
+        for (i = j = 1; j <= 12; i = ++j) {
+          c = new CoffeeGL.Shapes.Cylinder(th, res, seg, h, col);
+          cn = new CoffeeGL.Node(c);
+          this.top.add(cn);
+          results.push(cn);
+        }
+        return results;
+      }).call(this);
+      this.cs[0].matrix.translate(new CoffeeGL.Vec3(-1, -1, 0));
+      this.cs[1].matrix.translate(new CoffeeGL.Vec3(-1, 1, 0));
+      this.cs[2].matrix.translate(new CoffeeGL.Vec3(1, -1, 0));
+      this.cs[3].matrix.translate(new CoffeeGL.Vec3(1, 1, 0));
+      this.cs[4].matrix.rotateX();
+      this.cs[4].matrix.translate(new CoffeeGL.Vec3(-1, 0, -1));
+      this.cs[5].matrix.translate(new CoffeeGL.Vec3(-1, 0, 1));
+      this.cs[6].matrix.translate(new CoffeeGL.Vec3(1, 0, -1));
+      this.cs[7].matrix.translate(new CoffeeGL.Vec3(1, 0, 1));
+      this.cs[8].matrix.translate(new CoffeeGL.Vec3(0, -1, -1));
+      this.cs[9].matrix.translate(new CoffeeGL.Vec3(0, -1, 1));
+      this.cs[10].matrix.translate(new CoffeeGL.Vec3(0, 1, -1));
+      this.cs[11].matrix.translate(new CoffeeGL.Vec3(0, 1, 1));
       GL.enable(GL.CULL_FACE);
       GL.cullFace(GL.BACK);
       return GL.enable(GL.DEPTH_TEST);
     };
 
     Main.prototype.update = function(dt) {
-      return this.light1.pos = this.camera.pos;
+      var ref, ref1, ref2, t1, t2, t3, x, y, z;
+      x = this.camera.pos.x;
+      y = this.camera.pos.y;
+      z = this.camera.pos.z;
+      t1 = 2 * Math.PI / 3;
+      t2 = 4 * Math.PI / 3;
+      t3 = 6 * Math.PI / 3;
+      ref = [x * Math.cos(t1) - y * Math.sin(t1), y * Math.cos(t1) + x * Math.sin(t1)], this.light1.pos.x = ref[0], this.light1.pos.y = ref[1];
+      ref1 = [x * Math.cos(t2) - y * Math.sin(t2), y * Math.cos(t2) + x * Math.sin(t2)], this.light2.pos.x = ref1[0], this.light2.pos.y = ref1[1];
+      return ref2 = [x * Math.cos(t3) - y * Math.sin(t3), y * Math.cos(t3) + x * Math.sin(t3)], this.light3.pos.x = ref2[0], this.light3.pos.y = ref2[1], ref2;
     };
 
     Main.prototype.draw = function() {
