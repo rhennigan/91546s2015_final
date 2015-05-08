@@ -58,8 +58,15 @@ vMul = (u, v) -> new Vec3(u.x*v.x, u.y*v.y, u.z*v.z)
 vDot = (u, v) -> u.x*v.x + u.y*v.y + u.z*v.z
 vNorm = (v) -> Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
 vNormalize = (v) -> vsMul(v, 1 / vNorm(v))
-det = (u, v, w) -> -(u.z*v.y*w.x) + u.y*v.z*w.x + u.z*v.x*w.y - u.x*v.z*w.y - u.y*v.x*w.z + u.x*v.y*w.z
-
+det3 = (u, v, w) -> -(u.z*v.y*w.x) + u.y*v.z*w.x + u.z*v.x*w.y - u.x*v.z*w.y - u.y*v.x*w.z + u.x*v.y*w.z
+det4 = (u, v, w, x) ->
+  -u.z*v.y*w.x*x.w + u.y*v.z*w.x*x.w + u.z*v.x*w.y*x.w - u.x*v.z*w.y*x.w -
+    u.y*v.x*w.z*x.w + u.x*v.y*w.z*x.w + u.z*v.y*w.w*x.x - u.y*v.z*w.w*x.x -
+    u.z*v.w*w.y*x.x + u.w*v.z*w.y*x.x + u.y*v.w*w.z*x.x - u.w*v.y*w.z*x.x -
+    u.z*v.x*w.w*x.y + u.x*v.z*w.w*x.y + u.z*v.w*w.x*x.y - u.w*v.z*w.x*x.y -
+    u.x*v.w*w.z*x.y + u.w*v.x*w.z*x.y + u.y*v.x*w.w*x.z - u.x*v.y*w.w*x.z -
+    u.y*v.w*w.x*x.z + u.w*v.y*w.x*x.z + u.x*v.w*w.y*x.z - u.w*v.x*w.y*x.z
+  
 intersection = (line1, line2) ->
   [x1, y1, z1] = [line1.p1.x, line1.p1.y, line1.p1.z]
   [x2, y2, z2] = [line1.p2.x, line1.p2.y, line1.p2.z]
