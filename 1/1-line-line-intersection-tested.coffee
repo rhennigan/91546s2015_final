@@ -1,4 +1,5 @@
 EPS = 0.00001
+ZPLANE = -1
 
 Vec2 = CoffeeGL.Vec2
 Vec3 = CoffeeGL.Vec3
@@ -90,7 +91,7 @@ intersection_point = (line1, line2) ->
 init = () ->
   @top_node = new CoffeeGL.Node()
 
-  RED = new CoffeeGL.Colour.RGBA(1, 0, 0, 1)
+  RED = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
 
   r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
   r.get (data) =>
@@ -98,47 +99,35 @@ init = () ->
     shader.bind()
 
   random_line = () ->
-    p1 = new Vec3(Math.random()*500, Math.random()*500, 0)
-    p2 = new Vec3(Math.random()*500, Math.random()*500, 0)
+    p1 = new Vec3(Math.random()*500, Math.random()*500, ZPLANE)
+    p2 = new Vec3(Math.random()*500, Math.random()*500, ZPLANE)
     c1 = new CoffeeGL.Colour.RGBA(Math.random(), Math.random(), Math.random(), 1.0)
     c2 = new CoffeeGL.Colour.RGBA(Math.random(), Math.random(), Math.random(), 1.0)
     line = new LineSegment(p1, p2, c1, c2)
     line
 
   lines = []
-  for i in [1..10]
+  for i in [1..20]
     line = random_line()
     lines.push(line)
     @top_node.add(new CoffeeGL.Node(line))
     for other_line in lines
       p = intersection_point(line, other_line)
-
       if p
-        console.log(p)
-        s = new CoffeeGL.Shapes.Sphere(5, 10, p, RED)
+        s = new CoffeeGL.Shapes.Sphere(5, 5, p, RED)
+        for vert in s.v
+          vert.c.b = 0
+          vert.c.g = 0
+          vert.c.a = 0.75
         @top_node.add(new CoffeeGL.Node(s))
 
-
-#
-#  @p1 = new Vec3(100, 100, 0)
-#  @p2 = new Vec3(400, 400, 0)
-#  @p3 = new Vec3(100, 400, 0)
-#  @p4 = new Vec3(400, 100, 0)
-#
-#  @c1 = new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0)
-#  @c2 = new CoffeeGL.Colour.RGBA(0.0, 0.0, 1.0, 1.0)
-#
-#  @line1 = new LineSegment(@p1, @p2, @c1, @c1)
-#  @line2 = new LineSegment(@p3, @p4, @c2, @c2)
-
-  @node1 = new CoffeeGL.Node(random_line())
-  @node2 = new CoffeeGL.Node(random_line())
-
-  @top_node.add(@node1)
-  @top_node.add(@node2)
-
   @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
+  @camera.far = 100
   @top_node.add(@camera)
+
+  GL.enable(GL.DEPTH_TEST)
+  GL.enable(GL.BLEND)
+  GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA)
 
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
