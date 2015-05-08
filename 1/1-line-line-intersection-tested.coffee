@@ -91,49 +91,63 @@ intersection_point = (line1, line2) ->
 class Viewer
 
   constructor: () ->
+
+    r = new CoffeeGL.Request('1-line-line-intersection-tested.glsl')
+    r.get (data) =>
+      shader = new CoffeeGL.Shader(data)
+      shader.bind()
+
     CoffeeGL.Context.mouseMove.add @onMouseMove, @
     CoffeeGL.Context.mouseDown.add @onMouseDown, @
     CoffeeGL.Context.mouseUp.add @onMouseUp, @
 
     @dragging = false
-    @p1 = new Vec2(0, 0)
-    @p2 = new Vec2(0, 0)
-    @p3 = new Vec2(0, 0)
-    @p4 = new Vec2(0, 0)
 
     @set1 = false
     @set2 = false
     @set3 = false
     @set4 = false
 
+    @line1 = new LineSegment(
+      new Vec3(0, 0, 0),
+      new Vec3(0, 0, 0),
+      new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0),
+      new CoffeeGL.Colour.RGBA(1.0, 0.0, 0.0, 1.0))
+
+    @line2 = new LineSegment(
+      new Vec3(0, 0, 0),
+      new Vec3(0, 0, 0),
+      new CoffeeGL.Colour.RGBA(0.0, 1.0, 0.0, 1.0),
+      new CoffeeGL.Colour.RGBA(0.0, 1.0, 0.0, 1.0))
+
+    @nodes = []
+    @nodes.push(new CoffeeGL.Node @line1)
+    @nodes.push(new CoffeeGL.Node @line2)
+
+    @camera = new CoffeeGL.Camera.OrthoCamera(new Vec3(0, 0, 0.2), new Vec3(0, 0, 0))
+
+    @nodes[1].add @camera
+    @nodes[2].add @camera
+
+  draw = () ->
+    GL.clearColor(0.15, 0.15, 0.15, 1.0)
+    GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
+    @nodel1.draw()
+    @nodel2.draw()
+
   onMouseMove: (event) ->
-    if @dragging
-      xy = [x, y] = [event.mouseX, event.mouseY]
-      switch
-        when 
+    xy = [x, y] = [event.mouseX, event.mouseY]
     @
 
   onMouseDown: (event) ->
     xy = [event.mouseX, event.mouseY]
-    @dragging = true
-    switch
-      when not @set1
-        [@p1.x, @p1.y] = xy
-        [@p2.x, @p2.y] = xy
-        @set1 = true
-      when not @set3
-        [@p3.x, @p3.y] = xy
-        [@p4.x, @p4.y] = xy
-        @set3 = true
-      else
-        @
+    console.log(xy)
 
   onMouseUp: (event) ->
     @
 
   onMouseOver: (event) ->
-    if @px == 0 and @py == 0
-      [@px, @py] = [event.mouseX, event.mouseY]
+    @
 
 init = () ->
   drag_start = new Vec2(0, 0)
@@ -181,8 +195,6 @@ init = () ->
 draw = () ->
   GL.clearColor(0.15, 0.15, 0.15, 1.0)
   GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT)
-#  for node in nodes
-#    node.draw()
   @nodel1.draw()
   @nodel2.draw()
 
