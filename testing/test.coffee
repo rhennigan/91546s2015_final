@@ -87,6 +87,20 @@ intersection = (line1, line2) ->
   if not coplanar(line1, line2)
     null
   else
+    a = vSub(line1.p2, line1.p1)
+    b = vSub(line2.p2, line2.p1)
+    c = vSub(line2.p1, line1.p1)
+
+    an = vNormalize(a)
+    bn = vNormalize(b)
+    vn = vNormalize(cross3(an, bn))
+    n = vNorm(v)
+    n2 = n*n
+
+    s1 = det3(c, bn, vn) / n2
+    s2 = det3(c, an, vn) / n2
+
+    
 
 
 
